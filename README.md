@@ -5,12 +5,6 @@
 - Rio Taiga
 - Manh Tuong Nguyen
 
-## Course
-CS-157A Sec 02
-
-## Date
-2/20/2024
-
 ## Project Description
 The Car Dealership Management System is designed to revolutionize how car dealerships operate in the competitive automotive industry. It integrates inventory management, customer relations, sales tracking, and reporting functionalities to enhance customer satisfaction and streamline dealership operations.
 
