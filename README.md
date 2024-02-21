@@ -47,10 +47,6 @@ The Car Dealership Management System is designed to revolutionize how car dealer
 
 - Build API to connect DBMS to front-end website
 
-## References
-- [Steven Creek BMW Dealer website](https://www.stevenscreekbmw.com/) (as an example for UX/UI)
-- [Designing and Implementing a Relational Database for a Used Car Marketplace](https://rahmad07g.medium.com/designing-and-implementing-a-relational-database-for-a-used-car-marketplace-89983a8243) by Rahmad Gunawan
-
 ## Databases and Table Usage
 - **Databases:** MySQL
 - **Tables:** Estimated 5 to 10 tables for inventory, sales, customers, etc.
