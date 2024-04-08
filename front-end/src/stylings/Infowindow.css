@@ -4,15 +4,25 @@
   padding: 0;
   box-sizing: border-box;
 }
-
+/* Info container */
+.infoContainer {
+  display: flex; /* Make the container a flexbox */
+  flex-wrap: wrap; /* Allow cards to wrap to the next line */
+  padding: 20px; /* Add some padding around the container */
+  justify-content: center;
+}
 .infoCard {
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(247, 247, 247);
   margin: 20px;
   width: 280px;
-  height: 400px;
+  height: 350px;
   border-radius: 8px;
   overflow: hidden;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  transition: 0.5s;
+}
+.infoCard:hover{
+  background-color: rgb(204, 224, 224);
 }
 .cargallery {
   height: 150px;

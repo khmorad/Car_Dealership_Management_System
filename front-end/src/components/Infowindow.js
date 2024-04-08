@@ -14,7 +14,7 @@ export default function Infowindow() {
     },
     {
       picture:
-        "https://images.dealer.com/ddc/vehicles/2024/Honda/CR-V/SUV/trim_EXL_722c6b/color/Platinum%20White%20Pearl-WX-235%2C234%2C231-640-en_US.jpg",
+        "https://cache.bmwusa.com/cosy.arox?pov=walkaround&brand=WBBM&vehicle=248F&client=byoc&paint=P0300&fabric=FLKSW&sa=S01MA,S01TH,S0302,S0319,S0322,S03MF,S0453,S04GQ,S04HB,S04MC,S05AC,S05AZ,S06AC,S06AK,S06C4,S06NW,S06U3,S06WD,S0712,S0760,S0776,S07M9,S07MA&date=20240228&angle=30",
       thumbnail: "https://picsum.photos/id/1019/250/150/",
     },
   ];
@@ -23,7 +23,7 @@ export default function Infowindow() {
       {carInfo.map((car, index) => (
         <div className="infoCard" key={index}>
           <div className="cargallery">
-            <img src={car.thumbnail} alt="Thumbnail" />
+            <img src={car.picture} alt="Picture" />
           </div>
           <div className="carInfo">bruh</div>
         </div>
