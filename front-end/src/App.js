@@ -3,12 +3,12 @@ import "./App.css";
 import Navbar from "./components/Navbar";
 import Ladysuzan from "./components/Ladysuzan";
 import Infowindow from "./components/Infowindow";
-import Chatbot from "./components/Chatbot";
-
+import ChatAssistant from "./components/ChatAssistant";
 function App() {
   return (
     <div className="App">
       <Navbar />
+      <ChatAssistant/>
       <Ladysuzan />
       <Infowindow />
     </div>
