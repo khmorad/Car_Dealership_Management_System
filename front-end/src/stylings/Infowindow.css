@@ -1,0 +1,29 @@
+* {
+  outline: none;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.infoCard {
+  background-color: rgb(255, 255, 255);
+  margin: 20px;
+  width: 280px;
+  height: 400px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}
+.cargallery {
+  height: 150px;
+  overflow: hidden;
+}
+
+.cargallery img {
+  width: 100%;
+  object-fit: cover;
+}
+
+.carInfo {
+  padding: 10px;
+}
