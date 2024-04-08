@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import "react-image-gallery/styles/css/image-gallery.css"; // Import the CSS for styling
 import "../stylings/Ladysuzan.css";
 
 const images = [
