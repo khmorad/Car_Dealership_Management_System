@@ -97,7 +97,32 @@ export default function Infowindow() {
 
   //show full page of a car
   return (
+    <div className="container">
+      
+    <div className="filterContainer">
+      <div className="insideContainer">
+      <input placeholder="fliter results..." className="filterSearch"></input>
+    <ul>
+
+            <li><input type="checkbox" className="filter"></input>Suv</li>
+            <li><input type="checkbox" className="filter"></input>Filter 2</li>
+            <li><input type="checkbox" className="filter"></input>Filter 2</li>
+            <li><input type="checkbox" className="filter"></input>Filter 2</li>
+            <li><input type="checkbox" className="filter"></input>Filter 2</li>
+            <li><input type="checkbox" className="filter"></input>Filter 2</li>
+            <li><input type="checkbox" className="filter"></input>Filter 2</li>
+            <li><input type="checkbox" className="filter"></input>Filter 2</li>
+            <li><input type="checkbox" className="filter"></input>Filter 2</li>
+            <li><input type="checkbox" className="filter"></input>Filter 2</li>
+            {/* Add more filters as needed */}
+    </ul>
+   
+
+    </div>
+    </div>
     <div className="infoContainer">
+
+      
       {carInfo.map((car, index) => (
         <div className="infoCard" key={index}>
           <div className="cargallery">
@@ -112,11 +137,16 @@ export default function Infowindow() {
               <li>
                 <span className="detailLabel">Mileage:</span> {car.Mileage} miles
               </li>
+              <li>
+                <span className="detailLabel">Price:</span> {`$${car.Price}`}
+              </li>
             </ul>
           </div>
         </div>
       ))}
     </div>
+    </div>
+ 
   );
 }
 
