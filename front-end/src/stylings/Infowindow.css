@@ -4,12 +4,43 @@
   padding: 0;
   box-sizing: border-box;
 }
-/* Info container */
+.container {
+  display: flex;
+}
+.filterContainer {
+  margin-top: 2%;
+  margin-left: 6%;
+  padding: 4px;
+  background-color: rgba(136, 137, 137, 0.147);
+  flex: .5;
+  height: 460px;
+  border-radius: 6px;
+  overflow: hidden;
+}
+.filterContainer ul {
+  list-style-type: none;
+
+}
+.filter{
+  margin-right:3px;
+  margin-bottom: 8px
+  
+}
+.filterSearch{
+  margin-bottom: 20px;
+  width: 80%;
+}
+.insideContainer{
+  margin: 30px;
+}
+
 .infoContainer {
-  display: flex; /* Make the container a flexbox */
-  flex-wrap: wrap; /* Allow cards to wrap to the next line */
-  padding: 20px; /* Add some padding around the container */
+  flex: 2;
+  display: flex; 
+  flex-wrap: wrap; 
   justify-content: center;
+  background-color: rgb(255, 255, 255);
+
 }
 .infoCard {
   background-color: rgb(247, 247, 247);
@@ -19,10 +50,11 @@
   border-radius: 8px;
   overflow: hidden;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
-  transition: 0.5s;
+  transition: 0.1s;
 }
 .infoCard:hover{
-  background-color: rgb(204, 224, 224);
+  background-color: rgb(244, 247, 247);
+  transform: translateY(2px);
 }
 .cargallery {
   height: 150px;
@@ -37,3 +69,8 @@
 .carInfo {
   padding: 10px;
 }
+
+.carDetails{
+  margin-top: 8%;
+}
+
