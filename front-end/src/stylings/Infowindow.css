@@ -9,16 +9,13 @@
 }
 .filterContainer {
   margin-top: 2%;
-  margin-left: 2px;
+  margin-left: 6%;
   padding: 4px;
-  background-color: rgba(136, 137, 137, 0.448);
-  flex: 1;
-  width: 20px;
+  background-color: rgba(136, 137, 137, 0.147);
+  flex: .5;
   height: 460px;
   border-radius: 6px;
   overflow: hidden;
-  
-  /* Adjust width as needed */
 }
 .filterContainer ul {
   list-style-type: none;
@@ -27,20 +24,20 @@
 .filter{
   margin-right:3px;
   margin-bottom: 8px
-  /* Adjust width as needed */
+  
 }
 .filterSearch{
   margin-bottom: 20px;
+  width: 80%;
 }
 .insideContainer{
   margin: 30px;
 }
-/* Info container */
+
 .infoContainer {
-  flex: 4;
-  display: flex; /* Make the container a flexbox */
-  flex-wrap: wrap; /* Allow cards to wrap to the next line */
-  padding: 20px; /* Add some padding around the container */
+  flex: 2;
+  display: flex; 
+  flex-wrap: wrap; 
   justify-content: center;
   background-color: rgb(255, 255, 255);
 
@@ -53,7 +50,7 @@
   border-radius: 8px;
   overflow: hidden;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
-  transition: 0.3s;
+  transition: 0.1s;
 }
 .infoCard:hover{
   background-color: rgb(244, 247, 247);
@@ -73,7 +70,7 @@
   padding: 10px;
 }
 
-
 .carDetails{
   margin-top: 8%;
 }
+
