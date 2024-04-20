@@ -14,6 +14,8 @@ app.config['MYSQL_DATABASE_DB'] = os.environ.get('CarManagement')
 # Initialize MySQL
 mysql = MySQL(app)
 
+
+#************************Rio Taiga(Employee, Customer table)***********************************
 # Create Employee
 @app.route('/employee', methods=['POST'])
 def create_employee():
@@ -95,6 +97,20 @@ def delete_customer(customer_id):
         return jsonify({"message": "Customer deleted successfully"}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 400
+    #*****************************************************************************
+    
+    #************************Eddie (Car, Car_part table)**************************
+    #*****************************************************************************
+
+
+    #************************YAR (transaction)************************************
+
+
+
+    #*****************************************************************************
+
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)
