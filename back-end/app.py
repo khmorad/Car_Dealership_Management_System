@@ -1,16 +1,16 @@
 from flask import Flask, request, jsonify
-from flaskext.mysql import MySQL
+from flask_mysqldb import MySQL
 import os
+from dotenv import load_dotenv
+
 
 app = Flask(__name__)
 
-# MySQL configuration
-app.config['MYSQL_DATABASE_HOST'] = os.environ.get('34.83.200.253')
-app.config['MYSQL_DATABASE_USER'] = os.environ.get('cs157')
-#Use "export DB_PASSWORD=Xzu88xF2{t~V9o\m to make it store into your local machine for security purposes
-app.config['MYSQL_DATABASE_PASSWORD'] = os.environ.get('Databasecs157')
-app.config['MYSQL_DATABASE_DB'] = os.environ.get('CarManagement')
-
+app.config['MYSQL_HOST'] = os.getenv("host")
+app.config['MYSQL_USER'] = os.getenv("user")
+app.config['MYSQL_PASSWORD'] = os.getenv("password")
+app.config['MYSQL_DB'] = os.getenv("dbName")
+app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 # Initialize MySQL
 mysql = MySQL(app)
 
@@ -100,6 +100,70 @@ def delete_customer(customer_id):
     #*****************************************************************************
     
     #************************Eddie (Car, Car_part table)**************************
+# GET method for all cars
+@app.route('/cars', methods=['GET'])
+def get_all_car():
+    try:
+        cursor = mysql.connection.cursor()
+        # Query database for employees
+        cursor.execute("SELECT * FROM Cars")
+        employees = cursor.fetchall()
+        # Return employees as JSON
+        cursor.close()
+        return jsonify(employees), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+# GET method for a single car using car_id
+@app.route('/cars/<string:car_id>', methods=['GET'])
+def get_one_car(car_id):
+    try:
+        cursor = mysql.connection.cursor()
+        # Query database for employees
+        cursor.execute("SELECT * FROM Cars WHERE VIN=%s", (car_id,))
+        data = cursor.fetchall()
+        cursor.close()
+        if not data:
+            return jsonify({"Error": "Car ID is invalid"}), 404
+        return jsonify(data), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+# CREATE method for a single car
+@app.route('/cars', methods=['POST'])
+def create_car():
+    try:
+        cursor = mysql.connection.cursor()
+        request_data = request.get_json()
+        # Query database for employees
+        cursor.execute("SELECT * FROM Cars WHERE VIN=%(VIN)s", request_data)
+        returned_data = cursor.fetchall()
+        if returned_data:
+            cursor.close()
+            return jsonify({"Error": "Car ID is already existed"}), 404
+        cursor.execute("INSERT INTO Cars (VIN, Year_of_manufacturing, Brand, Model, Trim, Mileage, Type, Exterior_color, Drivetrain, Gas_Type, MPG, Interior_color, Seats_no, Price, Customer_ID) VALUES (%(VIN)s, %(Year_of_manufacturing)s, %(Brand)s, %(Model)s, %(Trim)s, %(Mileage)s, %(Type)s, %(Exterior_color)s, %(Drivetrain)s, %(Gas_Type)s, %(MPG)s, %(Interior_color)s, %(Seats_no)s, %(Price)s, %(Customer_ID)s)", request_data)
+        return jsonify({"Success": "Car is added"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+# DELETE
+@app.route('/cars', methods=['DELETE'])
+def create_car():
+    try:
+        cursor = mysql.connection.cursor()
+        request_data = request.get_json()
+        # Query database for employees
+        cursor.execute("SELECT * FROM Cars WHERE VIN=%(VIN)s", request_data)
+        returned_data = cursor.fetchall()
+        if returned_data:
+            cursor.close()
+            return jsonify({"Error": "Car ID is already existed"}), 404
+        cursor.execute(
+            "INSERT INTO Cars (VIN, Year_of_manufacturing, Brand, Model, Trim, Mileage, Type, Exterior_color, Drivetrain, Gas_Type, MPG, Interior_color, Seats_no, Price, Customer_ID) VALUES (%(VIN)s, %(Year_of_manufacturing)s, %(Brand)s, %(Model)s, %(Trim)s, %(Mileage)s, %(Type)s, %(Exterior_color)s, %(Drivetrain)s, %(Gas_Type)s, %(MPG)s, %(Interior_color)s, %(Seats_no)s, %(Price)s, %(Customer_ID)s)",
+            request_data)
+        return jsonify({"Success": "Car is added"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
     #*****************************************************************************
 
 
