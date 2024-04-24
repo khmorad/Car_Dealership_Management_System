@@ -16,7 +16,114 @@ mysql = MySQL(app)
 
 
 #************************Rio Taiga(Employee, Customer table)***********************************
+@app.route('/employee', methods=['POST'])
+def create_employee():
+    try:
+        cur = mysql.connection.cursor()
+        # Extract data from request
+        data = request.json
+        name = data['name']
+        dob = data['dob']
+        department = data['department']
+        job_title = data['job_title']
+        report_to = data.get('report_to', None)
+        # Insert data into database
+        cur.execute(
+            "INSERT INTO Employees (Name, DOB, Department, jobTitle, reportTo) VALUES (%s, %s, %s, %s, %s)",
+            (name, dob, department, job_title, report_to)
+        )
+        mysql.connection.commit()
+        cur.close()
+        return jsonify({"message": "Employee created successfully"}), 201
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
 
+# Read all Employees
+@app.route('/employee', methods=['GET'])
+def get_employees():
+    try:
+        cur = mysql.connection.cursor()
+        # Query database for employees
+        cur.execute("SELECT * FROM Employees")
+        employees = cur.fetchall()
+        cur.close()
+        return jsonify(employees), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+# Update Employee
+@app.route('/employee/<int:employee_id>', methods=['PUT'])
+def update_employee(employee_id):
+    try:
+        cur = mysql.connection.cursor()
+        # Extract data from request
+        data = request.json
+        name = data['name']
+        dob = data['dob']
+        department = data['department']
+        job_title = data['job_title']
+        report_to = data.get('report_to', None)
+        # Update employee in database
+        cur.execute(
+            "UPDATE Employees SET Name = %s, DOB = %s, Department = %s, jobTitle = %s, reportTo = %s WHERE EmployeeID = %s",
+            (name, dob, department, job_title, report_to, employee_id)
+        )
+        mysql.connection.commit()
+        cur.close()
+        return jsonify({"message": "Employee updated successfully"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+# Delete Employee
+@app.route('/employee/<int:employee_id>', methods=['DELETE'])
+def delete_employee(employee_id):
+    try:
+        cur = mysql.connection.cursor()
+        # Delete employee from database
+        cur.execute("DELETE FROM Employees WHERE EmployeeID = %s", (employee_id,))
+        mysql.connection.commit()
+        cur.close()
+        return jsonify({"message": "Employee deleted successfully"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+    
+
+
+    # Create Customer
+@app.route('/customer', methods=['POST'])
+def create_customer():
+    try:
+        cur = mysql.connection.cursor()
+        # Extract data from request
+        data = request.json
+        name = data['name']
+        dob = data['dob']
+        address = data['address']
+        phone_number = data['phone_number']
+        email = data['email']
+        employee_id = data['employee_id']
+        # Insert data into database
+        cur.execute(
+            "INSERT INTO Customers (Name, DOB, Address, PhoneNumber, Email, EmployeeID) VALUES (%s, %s, %s, %s, %s, %s)",
+            (name, dob, address, phone_number, email, employee_id)
+        )
+        mysql.connection.commit()
+        cur.close()
+        return jsonify({"message": "Customer created successfully"}), 201
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+# Read all Customers
+@app.route('/customer', methods=['GET'])
+def get_customers():
+    try:
+        cur = mysql.connection.cursor()
+        # Query database for customers
+        cur.execute("SELECT * FROM Customers")
+        customers = cur.fetchall()
+        cur.close()
+        return jsonify(customers), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
 #*****************************************************************************
     
 #************************Eddie (Car, Car_part table)**************************
@@ -103,21 +210,18 @@ def update_transaction(Transaction_ID):
     if 'VIN' in data:
       update_data['VIN'] = data['VIN']  # Sanitize if needed
     if 'Date' in data:
-      # Consider using datetime parsing and formatting for consistency
       update_data['Date'] = data['Date']
     if 'Price' in data:
       update_data['Price'] = data['Price']
     if 'Employee_ID' in data:
       update_data['Employee_ID'] = data['Employee_ID']  # Sanitize if needed
 
-    # Construct UPDATE statement with parameterization to prevent SQL injection
     set_clause = ", ".join([f"{key} = %s" for key in update_data.keys()])
     update_query = f"UPDATE Transactions SET {set_clause} WHERE Transaction_ID = %s"
     update_params = list(update_data.values()) + [Transaction_ID]
 
     cursor.execute(update_query, update_params)
 
-    # Check if rows were updated (optional)
     if cursor.rowcount == 0:
       return jsonify({'message': 'No changes made to transaction'}), 200  # Or a more specific message
 
