@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "../stylings/Ladysuzan.css";
-
+import { TypeAnimation } from 'react-type-animation';
 const images = [
   {
     original: "https://cdn.motor1.com/images/mgl/lAOqE/s3/2019-bmw-x5-xdrive45e.webp",
@@ -32,6 +32,22 @@ export default function Ladysuzan() {
 
   return (
     <div>
+      <div className="Typing-animation" style={{ textAlign: 'center' }}>
+      <TypeAnimation
+      style={{ whiteSpace: 'pre-line', height: '110px', display: 'block', fontSize: '1.75rem' }}
+      sequence={[
+        `Explore our vast selection \n of \n quality vehicles.`,
+        2000, 
+        `Discover reliable cars \n at \n unbeatable prices.`,
+        2000, 
+        `Drive away in your dream car \n today!!!`,
+        2000, 
+        '',
+      ]}
+      speed={{ type: 'keyStrokeDelayInMs', value: 39 }}
+      repeat={Infinity}
+    />
+</div>
       <div className="gallery">
         <button className="nav-button" onClick={handleClickPrev}>
           {"<"}
