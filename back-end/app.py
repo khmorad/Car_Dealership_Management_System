@@ -174,7 +174,6 @@ def delete_transactions(Transaction_ID):
   finally:
     cursor.close()
 
-
     #*****************************************************************************
 
 
