@@ -1,7 +1,17 @@
 import React from "react";
+import { GoogleLogin } from 'react-google-login';
 import "../stylings/Navbar.css";
 
 export default function Navbar() {
+  const responseGoogle = (response) => {
+    console.log(response);
+    // Here you can handle the response from Google login
+  };
+
+  const onFailure = (error) => {
+    console.error("Google login failed:", error);
+  };
+
   return (
     <nav className="navbar">
       <h1 className="logo">Logo</h1>
@@ -21,7 +31,14 @@ export default function Navbar() {
           <a href="#contact">Contact</a>
         </li>
       </ul>
-      <button className="button-55">Login</button>
+      <GoogleLogin
+        clientId="864226610425-r76gr5i0irkil13r7kn7cfsds5s244uf.apps.googleusercontent.com"
+        buttonText="Login"
+        onSuccess={responseGoogle}
+        onFailure={onFailure}
+        cookiePolicy={'single_host_origin'}
+        className="button-55"
+      />
     </nav>
   );
 }

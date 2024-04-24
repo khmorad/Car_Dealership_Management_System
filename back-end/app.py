@@ -1,122 +1,38 @@
-#from flaskext.mysql import MySQL
 from flask import Flask, request, jsonify
-#i wanst able to use flaskext.mysql so I used the one below it seems like everything
-#is similar to flaskext.mysql other than the configuration part 
 from flask_mysqldb import MySQL
 from datetime import datetime
-
-
 import os
-
+from dotenv import load_dotenv
 app = Flask(__name__)
 
-# MySQL configuration
-#app.config['MYSQL_DATABASE_HOST'] = os.environ.get('34.83.200.253')
-#app.config['MYSQL_DATABASE_USER'] = os.environ.get('cs157')
-#Use "export DB_PASSWORD=Xzu88xF2{t~V9o\m to make it store into your local machine for security purposes
-#app.config['MYSQL_DATABASE_PASSWORD'] = os.environ.get('Databasecs157')
-#app.config['MYSQL_DATABASE_DB'] = os.environ.get('CarManagement')
 
 # MySQL configuration
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'password'
+app.config['MYSQL_PASSWORD'] = '021888274047Mm!'
 app.config['MYSQL_DB'] = 'CarManagement'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
+
+
+#app.config['MYSQL_HOST'] = os.getenv("host")
+#app.config['MYSQL_USER'] = os.getenv("user")
+#app.config['MYSQL_PASSWORD'] = os.getenv("password")
+#app.config['MYSQL_DB'] = os.getenv("dbName")
+#app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 
 # Initialize MySQL
 mysql = MySQL(app)
 
 
 #************************Rio Taiga(Employee, Customer table)***********************************
-# Create Employee
-@app.route('/employee', methods=['POST'])
-def create_employee():
-    try:
-        # Extract data from request
-        # Validate data
-        # Insert data into database
-        return jsonify({"message": "Employee created successfully"}), 201
-    except Exception as e:
-        return jsonify({"error": str(e)}), 400
 
-# Read all Employees
-@app.route('/employee', methods=['GET'])
-def get_employees():
-    try:
-        # Query database for employees
-        # Return employees as JSON
-        return jsonify([]), 200
-    except Exception as e:
-        return jsonify({"error": str(e)}), 400
-
-# Update Employee
-@app.route('/employee/<int:employee_id>', methods=['PUT'])
-def update_employee(employee_id):
-    try:
-        # Extract data from request
-        # Validate data
-        # Update employee in database
-        return jsonify({"message": "Employee updated successfully"}), 200
-    except Exception as e:
-        return jsonify({"error": str(e)}), 400
-
-# Delete Employee
-@app.route('/employee/<int:employee_id>', methods=['DELETE'])
-def delete_employee(employee_id):
-    try:
-        # Delete employee from database
-        return jsonify({"message": "Employee deleted successfully"}), 200
-    except Exception as e:
-        return jsonify({"error": str(e)}), 400
-
-# Create Customer
-@app.route('/customer', methods=['POST'])
-def create_customer():
-    try:
-        # Extract data from request
-        # Validate data
-        # Insert data into database
-        return jsonify({"message": "Customer created successfully"}), 201
-    except Exception as e:
-        return jsonify({"error": str(e)}), 400
-
-# Read all Customers
-@app.route('/customer', methods=['GET'])
-def get_customers():
-    try:
-        # Query database for customers
-        # Return customers as JSON
-        return jsonify([]), 200
-    except Exception as e:
-        return jsonify({"error": str(e)}), 400
-
-# Update Customer
-@app.route('/customer/<int:customer_id>', methods=['PUT'])
-def update_customer(customer_id):
-    try:
-        # Extract data from request
-        # Validate data
-        # Update customer in database
-        return jsonify({"message": "Customer updated successfully"}), 200
-    except Exception as e:
-        return jsonify({"error": str(e)}), 400
-
-# Delete Customer
-@app.route('/customer/<int:customer_id>', methods=['DELETE'])
-def delete_customer(customer_id):
-    try:
-        # Delete customer from database
-        return jsonify({"message": "Customer deleted successfully"}), 200
-    except Exception as e:
-        return jsonify({"error": str(e)}), 400
-    #*****************************************************************************
+#*****************************************************************************
     
-    #************************Eddie (Car, Car_part table)**************************
-    #*****************************************************************************
+#************************Eddie (Car, Car_part table)**************************
+#*****************************************************************************
 
 
-    #************************YAR (transaction)************************************
+#************************YAR (transaction)************************************
 
 #create
 @app.route("/transactions", methods=["POST"])
