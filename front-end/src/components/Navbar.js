@@ -1,6 +1,6 @@
 import React from "react";
 import "../stylings/Navbar.css";
-
+//import './assets/google.png'
 export default function Navbar() {
   return (
     <nav className="navbar">
@@ -21,7 +21,7 @@ export default function Navbar() {
           <a href="#contact">Contact</a>
         </li>
       </ul>
-      <button className="button-55">Login</button>
+      <button className="button-55"><image></image>Login</button>
     </nav>
   );
 }
