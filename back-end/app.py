@@ -3,22 +3,14 @@ from flask_mysqldb import MySQL
 from datetime import datetime
 import os
 from dotenv import load_dotenv
-
+load_dotenv()
 app = Flask(__name__)
 
-# MySQL configuration
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = '021888274047Mm!'
-app.config['MYSQL_DB'] = 'CarManagement'
+app.config['MYSQL_HOST'] = os.getenv("host")
+app.config['MYSQL_USER'] = os.getenv("user")
+app.config['MYSQL_PASSWORD'] = os.getenv("password")
+app.config['MYSQL_DB'] = os.getenv("dbName")
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
-
-
-#app.config['MYSQL_HOST'] = os.getenv("host")
-#app.config['MYSQL_USER'] = os.getenv("user")
-#app.config['MYSQL_PASSWORD'] = os.getenv("password")
-#app.config['MYSQL_DB'] = os.getenv("dbName")
-#app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 # Initialize MySQL
 mysql = MySQL(app)
 
