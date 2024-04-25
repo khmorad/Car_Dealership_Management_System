@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import "../stylings/Infowindow.css";
 /*
 Type: BodyClass
@@ -12,6 +12,9 @@ Car attributes from VIN Decoder
 Add SoldStatus
 */
 export default function Infowindow() {
+
+  const carFilter = useRef(null)
+  const [filteredCars, setFilteredCars] = useState([]);
   const carInfo = [
     {
       VIN: 'ABC123XYZ456789',
@@ -96,6 +99,7 @@ export default function Infowindow() {
   ];
   const [showElement, setShowElement] = useState(true)
   useEffect(()=>{
+    setFilteredCars(carInfo)
     const handleResize = ()=>{
       if(window.innerWidth < 800){
         setShowElement(false)
@@ -108,6 +112,19 @@ export default function Infowindow() {
 
   }, [])
 
+
+  const handleFilter = ()=>{
+    const searchedCar = carFilter.current.value.toLowerCase()
+    if (searchedCar === ""){
+      setFilteredCars(carInfo)
+    }
+    else{
+      const filterValue = carInfo.filter(cars =>cars.Brand.toLowerCase().includes(searchedCar) )
+      setFilteredCars(filterValue)
+
+    }
+
+  }
   //show full page of a car
   return (
     <div className="container">
@@ -115,20 +132,16 @@ export default function Infowindow() {
     {showElement &&
     <div className="filterContainer">
     <div className="insideContainer">
-    <input placeholder="fliter results..." className="filterSearch"></input>
+    <input placeholder="fliter results..." ref={carFilter} className="filterSearch" onChange={handleFilter}></input>
   <ul>
           
           <li><input type="checkbox" className="filter"></input>Suv</li>
-          <li><input type="checkbox" className="filter"></input>Filter 2</li>
-          <li><input type="checkbox" className="filter"></input>Filter 2</li>
-          <li><input type="checkbox" className="filter"></input>Filter 2</li>
-          <li><input type="checkbox" className="filter"></input>Filter 2</li>
-          <li><input type="checkbox" className="filter"></input>Filter 2</li>
-          <li><input type="checkbox" className="filter"></input>Filter 2</li>
-          <li><input type="checkbox" className="filter"></input>Filter 2</li>
-          <li><input type="checkbox" className="filter"></input>Filter 2</li>
-          <li><input type="checkbox" className="filter"></input>Filter 2</li>
-          {/* Add more filters as needed */}
+          <li><input type="checkbox" className="filter"></input>Truck</li>
+          <li><input type="checkbox" className="filter"></input>Coup</li>
+          <li><input type="checkbox" className="filter"></input>Convertible</li>
+          <li><input type="checkbox" className="filter"></input>Sedan</li>
+          <li><input type="checkbox" className="filter"></input>Hybrid</li>
+  
   </ul>
  
 
@@ -137,7 +150,7 @@ export default function Infowindow() {
     <div className="infoContainer">
 
       
-      {carInfo.map((car, index) => (
+      {filteredCars.map((car, index) => (
         <div className="infoCard" key={index}>
           <div className="cargallery">
             <img src={car.picture} alt="Car Picture" />
