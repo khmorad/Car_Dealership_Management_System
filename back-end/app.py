@@ -11,9 +11,9 @@ app.config['MYSQL_USER'] = os.getenv("user")
 app.config['MYSQL_PASSWORD'] = os.getenv("password")
 app.config['MYSQL_DB'] = os.getenv("dbName")
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
+
 # Initialize MySQL
 mysql = MySQL(app)
-
 
 #************************Rio Taiga(Employee, Customer table)***********************************
 @app.route('/employee', methods=['POST'])
@@ -64,7 +64,7 @@ def update_employee(employee_id):
         report_to = data.get('report_to', None)
         # Update employee in database
         cur.execute(
-            "UPDATE Employees SET Name = %s, DOB = %s, Department = %s, jobTitle = %s, reportTo = %s WHERE EmployeeID = %s",
+            "UPDATE Employees SET Name = %s, DOB = %s, Department = %s, jobTitle = %s, reportTo = %s WHERE Employee_ID = %s",
             (name, dob, department, job_title, report_to, employee_id)
         )
         mysql.connection.commit()
@@ -79,14 +79,12 @@ def delete_employee(employee_id):
     try:
         cur = mysql.connection.cursor()
         # Delete employee from database
-        cur.execute("DELETE FROM Employees WHERE EmployeeID = %s", (employee_id,))
+        cur.execute("DELETE FROM Employees WHERE Employee_ID = %s", (employee_id,))
         mysql.connection.commit()
         cur.close()
         return jsonify({"message": "Employee deleted successfully"}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 400
-    
-
 
     # Create Customer
 @app.route('/customer', methods=['POST'])
@@ -103,7 +101,7 @@ def create_customer():
         employee_id = data['employee_id']
         # Insert data into database
         cur.execute(
-            "INSERT INTO Customers (Name, DOB, Address, PhoneNumber, Email, EmployeeID) VALUES (%s, %s, %s, %s, %s, %s)",
+            "INSERT INTO Customers (Name, DOB, Address, PhoneNumber, Email, Employee_ID) VALUES (%s, %s, %s, %s, %s, %s)",
             (name, dob, address, phone_number, email, employee_id)
         )
         mysql.connection.commit()
@@ -127,6 +125,94 @@ def get_customers():
 #*****************************************************************************
     
 #************************Eddie (Car, Car_part table)**************************
+# GET method for all cars (a single car if using car_id)
+@app.route('/cars/<string:car_id>', methods=['GET'])
+def get_one_car(car_id=""):
+    cursor = mysql.connection.cursor()
+    try:
+        if len(car_id) < 0:
+            cursor.execute("SELECT * FROM Cars")
+            return cursor.fetchall()
+        else:
+            cursor.execute("SELECT * FROM Cars WHERE VIN=%s", (car_id,))
+            data = cursor.fetchone()
+            if not data:
+                return jsonify({"Error": "Car ID is invalid"}), 404
+            return jsonify(data), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+    finally:
+        cursor.close()
+
+# CREATE method for a single car
+@app.route('/cars', methods=['POST'])
+def create_car():
+    cursor = mysql.connection.cursor()
+    try:
+        request_data = request.get_json()
+        # Query database for existed car if there is any
+        cursor.execute("SELECT * FROM Cars WHERE VIN=%(VIN)s", request_data)
+        returned_data = cursor.fetchall()
+        # If there is existed record, return error 400
+        if returned_data:
+            cursor.close()
+            return jsonify({"Error": "Car ID is already existed"}), 400
+        # Query database to insert new car record
+        cursor.execute("INSERT INTO Cars (VIN, Year_of_manufacturing, Brand, Model, Trim, Mileage, Type, Exterior_color, Drivetrain, Gas_Type, MPG, Interior_color, Seats_no, Price, Customer_ID) VALUES (%(VIN)s, %(Year_of_manufacturing)s, %(Brand)s, %(Model)s, %(Trim)s, %(Mileage)s, %(Type)s, %(Exterior_color)s, %(Drivetrain)s, %(Gas_Type)s, %(MPG)s, %(Interior_color)s, %(Seats_no)s, %(Price)s, %(Customer_ID)s)", request_data)
+        return jsonify({"Success": "Car is added"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+    finally:
+        cursor.close()
+
+@app.route("/cars", methods=["PUT"])
+def update_car():
+    cursor = mysql.connection.cursor()
+    try:
+        request_data = request.get_json()
+        # Query database to verify valid VIN
+        cursor.execute("SELECT * FROM Cars WHERE VIN = %(VIN)s", request_data)
+        returned_data = cursor.fetchone()
+        # If VIN does not exist, return error 404
+        if not returned_data:
+            return jsonify({"Error": "Car does not exist"}), 404
+        # Query database for valid customer
+        cursor.execute("SELECT * FROM Customers WHERE Customer_ID = %(Customer_ID)s", request_data)
+        returned_data = cursor.fetchall()
+        # If customer record does not exist, return error 404
+        if not returned_data:
+            return jsonify({"Error": "Customer does not exist, please add customer before adding car"}), 404
+        # Query database to update record
+        cursor.execute("UPDATE Cars SET Year_of_manufacturing = %(Year_of_manufacturing)s, Brand = %(Brand)s, Model = %(Model)s, Trim = %(Trim)s, Mileage = %(Mileage)s, Type = %(Type)s, Exterior_color = %(Exterior_color)s, Drivetrain = %(Drivetrain)s, Gas_Type = %(Gas_Type)s, MPG = %(MPG)s, Interior_color = %(Interior_color)s, Seats_no = %(Seats_no)s, Price = %(Price)s, Customer_ID = %(Customer_ID)s WHERE VIN = %(VIN)s", request_data)
+        mysql.connection.commit()
+        return jsonify({"Success":"Car has been updated"}), 200
+    except Exception as e:
+        mysql.connection.rollback()
+        return jsonify({"Error": str(e)}), 400
+    finally:
+        cursor.close()
+
+# DELETE
+@app.route('/cars/<string:VIN>', methods=['DELETE'])
+def delete_car(VIN):
+    cursor = mysql.connection.cursor()
+    try:
+        # Query database to verify valid VIN
+        cursor.execute(""" SELECT * FROM Cars WHERE VIN=%s """, (VIN,))
+        returned_data = cursor.fetchall()
+        # If VIN does not exist, return error 404
+        if not returned_data:
+            cursor.close()
+            return jsonify({"Error": "Car ID doesn't existed"}), 404
+        # Query database to delete matched record
+        cursor.execute(""" DELETE FROM Cars WHERE VIN=%s """, (VIN,))
+        mysql.connection.commit()
+        return jsonify({"Success": "Car is deleted"}), 200
+    except Exception as e:
+        mysql.connection.rollback()
+        return jsonify({"error": str(e)}), 400
+    finally:
+        cursor.close()
 #*****************************************************************************
 
 
