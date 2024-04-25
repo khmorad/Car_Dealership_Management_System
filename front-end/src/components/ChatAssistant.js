@@ -39,14 +39,13 @@ export default function ChatAssistant() {
       const promptMessage = {
         role: "system",
         content:
-          "This is a chat for assisting Immigrants that have recently moved in to united states in they are in need of guidance",
+          "This is a chat for assisting Car dealership where It would answer anything car related",
       };
       const apiRequestBody = {
         model: "gpt-3.5-turbo",
         messages: [
           promptMessage,
           { role: "user", content: message.content },
-          // You might want to add additional system messages or context here if needed
         ],
       };
   

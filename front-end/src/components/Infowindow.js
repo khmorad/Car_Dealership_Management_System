@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import "../stylings/Infowindow.css";
 /*
 Type: BodyClass
@@ -12,6 +12,16 @@ Car attributes from VIN Decoder
 Add SoldStatus
 */
 export default function Infowindow() {
+
+  const carFilter = useRef(null)
+  const suvCheckBox = useRef(null)
+  const truckCheckBox = useRef(null)
+  const hybridCheckBox = useRef(null)
+  const coupeCheckBox = useRef(null)
+  const convertableCheckbox = useRef(null)
+  const sedanCheckbox = useRef(null)
+
+  const [filteredCars, setFilteredCars] = useState([]);
   const carInfo = [
     {
       VIN: 'ABC123XYZ456789',
@@ -96,6 +106,7 @@ export default function Infowindow() {
   ];
   const [showElement, setShowElement] = useState(true)
   useEffect(()=>{
+    setFilteredCars(carInfo)
     const handleResize = ()=>{
       if(window.innerWidth < 800){
         setShowElement(false)
@@ -108,6 +119,41 @@ export default function Infowindow() {
 
   }, [])
 
+
+  const handleFilter = ()=>{
+    const searchedCar = carFilter.current.value.toLowerCase()
+    if (searchedCar === ""){
+      setFilteredCars(carInfo)
+    }
+    else{
+      const filterValue = carInfo.filter(cars =>cars.Brand.toLowerCase().includes(searchedCar) )
+      setFilteredCars(filterValue)
+
+    }
+
+  }
+
+  const handleCheckFilter = ()=>{
+    let filteredCar = [...carInfo]
+    if (truckCheckBox.current && truckCheckBox.current.checked) {
+      filteredCar = filteredCar.filter(car => car.Type.toLowerCase() === 'truck');
+    }
+    if (sedanCheckbox.current && sedanCheckbox.current.checked) {
+      filteredCar = filteredCar.filter(car => car.Type.toLowerCase() === 'sedan');
+    }
+    if (hybridCheckBox.current && hybridCheckBox.current.checked) {
+      filteredCar = filteredCar.filter(car => car.Type.toLowerCase() === 'hybrid');
+    }
+    if (suvCheckBox.current && suvCheckBox.current.checked) {
+      filteredCar = filteredCar.filter(car => car.Type.toLowerCase() === 'suv');
+    }
+    if (coupeCheckBox.current && coupeCheckBox.current.checked) {
+      filteredCar = filteredCar.filter(car => car.Type.toLowerCase() === 'coupe');
+    }
+
+
+    setFilteredCars(filteredCar)
+  }
   //show full page of a car
   return (
     <div className="container">
@@ -115,20 +161,16 @@ export default function Infowindow() {
     {showElement &&
     <div className="filterContainer">
     <div className="insideContainer">
-    <input placeholder="fliter results..." className="filterSearch"></input>
+    <input placeholder="fliter results..." ref={carFilter} className="filterSearch" onChange={handleFilter}></input>
   <ul>
           
-          <li><input type="checkbox" className="filter"></input>Suv</li>
-          <li><input type="checkbox" className="filter"></input>Filter 2</li>
-          <li><input type="checkbox" className="filter"></input>Filter 2</li>
-          <li><input type="checkbox" className="filter"></input>Filter 2</li>
-          <li><input type="checkbox" className="filter"></input>Filter 2</li>
-          <li><input type="checkbox" className="filter"></input>Filter 2</li>
-          <li><input type="checkbox" className="filter"></input>Filter 2</li>
-          <li><input type="checkbox" className="filter"></input>Filter 2</li>
-          <li><input type="checkbox" className="filter"></input>Filter 2</li>
-          <li><input type="checkbox" className="filter"></input>Filter 2</li>
-          {/* Add more filters as needed */}
+          <li><input type="checkbox" ref={suvCheckBox} className="filter" value="suv" onChange={handleCheckFilter}></input>Suv</li>
+          <li><input type="checkbox" ref={truckCheckBox} className="filter"  value="truck"onChange={handleCheckFilter}></input>Truck</li>
+          <li><input type="checkbox" ref={coupeCheckBox} className="filter" value="coupe"onChange={handleCheckFilter}></input>Coupe</li>
+          <li><input type="checkbox" ref={convertableCheckbox} className="filter" value="convertible"onChange={handleCheckFilter}></input>Convertible</li>
+          <li><input type="checkbox" ref={sedanCheckbox} className="filter" value="sedan"onChange={handleCheckFilter}></input>Sedan</li>
+          <li><input type="checkbox"ref={hybridCheckBox} className="filter" value="hybrid"onChange={handleCheckFilter}></input>Hybrid</li>
+  
   </ul>
  
 
@@ -137,7 +179,7 @@ export default function Infowindow() {
     <div className="infoContainer">
 
       
-      {carInfo.map((car, index) => (
+      {filteredCars.map((car, index) => (
         <div className="infoCard" key={index}>
           <div className="cargallery">
             <img src={car.picture} alt="Car Picture" />
