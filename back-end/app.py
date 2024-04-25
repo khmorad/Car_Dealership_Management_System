@@ -138,12 +138,12 @@ def get_customers():
 # ************************Eddie (Car, Car_part table)**************************
 # GET method for all cars (a single car if using car_id)
 @app.route('/cars/<string:car_id>', methods=['GET'])
-def get_one_car(car_id=""):
+def get_one_car(car_id):
     cursor = mysql.connection.cursor()
     try:
-        if len(car_id) < 0:
+        if car_id == "all":
             cursor.execute("SELECT * FROM Cars")
-            return cursor.fetchall()
+            return jsonify(cursor.fetchall()), 200
         else:
             cursor.execute("SELECT * FROM Cars WHERE VIN=%s", (car_id,))
             data = cursor.fetchone()
