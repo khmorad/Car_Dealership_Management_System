@@ -34,7 +34,7 @@ export default function Ladysuzan() {
     <div>
       <div className="Typing-animation" style={{ textAlign: 'center', fontWeight: 'bold' }}>
       <TypeAnimation
-      style={{ whiteSpace: 'pre-line', height: '110px', display: 'block', fontSize: '2rem' }}
+      style={{ whiteSpace: 'pre-line', height: '120px', display: 'block', fontSize: '1rem' }}
       sequence={[
         `Explore our vast selection \n of \n quality vehicles.`,
         2000, 
