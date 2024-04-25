@@ -3,6 +3,7 @@ from flask_mysqldb import MySQL
 from datetime import datetime
 import os
 from dotenv import load_dotenv
+
 load_dotenv()
 app = Flask(__name__)
 
@@ -15,7 +16,8 @@ app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 # Initialize MySQL
 mysql = MySQL(app)
 
-#************************Rio Taiga(Employee, Customer table)***********************************
+
+# ************************Rio Taiga(Employee, Customer table)***********************************
 @app.route('/employee', methods=['POST'])
 def create_employee():
     try:
@@ -38,6 +40,7 @@ def create_employee():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
+
 # Read all Employees
 @app.route('/employee', methods=['GET'])
 def get_employees():
@@ -50,6 +53,8 @@ def get_employees():
         return jsonify(employees), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 400
+
+
 # Update Employee
 @app.route('/employee/<int:employee_id>', methods=['PUT'])
 def update_employee(employee_id):
@@ -73,6 +78,7 @@ def update_employee(employee_id):
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
+
 # Delete Employee
 @app.route('/employee/<int:employee_id>', methods=['DELETE'])
 def delete_employee(employee_id):
@@ -87,6 +93,8 @@ def delete_employee(employee_id):
         return jsonify({"error": str(e)}), 400
 
     # Create Customer
+
+
 @app.route('/customer', methods=['POST'])
 def create_customer():
     try:
@@ -110,6 +118,7 @@ def create_customer():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
+
 # Read all Customers
 @app.route('/customer', methods=['GET'])
 def get_customers():
@@ -122,9 +131,11 @@ def get_customers():
         return jsonify(customers), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 400
-#*****************************************************************************
-    
-#************************Eddie (Car, Car_part table)**************************
+
+
+# *****************************************************************************
+
+# ************************Eddie (Car, Car_part table)**************************
 # GET method for all cars (a single car if using car_id)
 @app.route('/cars/<string:car_id>', methods=['GET'])
 def get_one_car(car_id=""):
@@ -144,6 +155,7 @@ def get_one_car(car_id=""):
     finally:
         cursor.close()
 
+
 # CREATE method for a single car
 @app.route('/cars', methods=['POST'])
 def create_car():
@@ -158,12 +170,15 @@ def create_car():
             cursor.close()
             return jsonify({"Error": "Car ID is already existed"}), 400
         # Query database to insert new car record
-        cursor.execute("INSERT INTO Cars (VIN, Year_of_manufacturing, Brand, Model, Trim, Mileage, Type, Exterior_color, Drivetrain, Gas_Type, MPG, Interior_color, Seats_no, Price, Customer_ID) VALUES (%(VIN)s, %(Year_of_manufacturing)s, %(Brand)s, %(Model)s, %(Trim)s, %(Mileage)s, %(Type)s, %(Exterior_color)s, %(Drivetrain)s, %(Gas_Type)s, %(MPG)s, %(Interior_color)s, %(Seats_no)s, %(Price)s, %(Customer_ID)s)", request_data)
+        cursor.execute(
+            "INSERT INTO Cars (VIN, Year_of_manufacturing, Brand, Model, Trim, Mileage, Type, Exterior_color, Drivetrain, Gas_Type, MPG, Interior_color, Seats_no, Price, Customer_ID) VALUES (%(VIN)s, %(Year_of_manufacturing)s, %(Brand)s, %(Model)s, %(Trim)s, %(Mileage)s, %(Type)s, %(Exterior_color)s, %(Drivetrain)s, %(Gas_Type)s, %(MPG)s, %(Interior_color)s, %(Seats_no)s, %(Price)s, %(Customer_ID)s)",
+            request_data)
         return jsonify({"Success": "Car is added"}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 400
     finally:
         cursor.close()
+
 
 @app.route("/cars", methods=["PUT"])
 def update_car():
@@ -183,14 +198,17 @@ def update_car():
         if not returned_data:
             return jsonify({"Error": "Customer does not exist, please add customer before adding car"}), 404
         # Query database to update record
-        cursor.execute("UPDATE Cars SET Year_of_manufacturing = %(Year_of_manufacturing)s, Brand = %(Brand)s, Model = %(Model)s, Trim = %(Trim)s, Mileage = %(Mileage)s, Type = %(Type)s, Exterior_color = %(Exterior_color)s, Drivetrain = %(Drivetrain)s, Gas_Type = %(Gas_Type)s, MPG = %(MPG)s, Interior_color = %(Interior_color)s, Seats_no = %(Seats_no)s, Price = %(Price)s, Customer_ID = %(Customer_ID)s WHERE VIN = %(VIN)s", request_data)
+        cursor.execute(
+            "UPDATE Cars SET Year_of_manufacturing = %(Year_of_manufacturing)s, Brand = %(Brand)s, Model = %(Model)s, Trim = %(Trim)s, Mileage = %(Mileage)s, Type = %(Type)s, Exterior_color = %(Exterior_color)s, Drivetrain = %(Drivetrain)s, Gas_Type = %(Gas_Type)s, MPG = %(MPG)s, Interior_color = %(Interior_color)s, Seats_no = %(Seats_no)s, Price = %(Price)s, Customer_ID = %(Customer_ID)s WHERE VIN = %(VIN)s",
+            request_data)
         mysql.connection.commit()
-        return jsonify({"Success":"Car has been updated"}), 200
+        return jsonify({"Success": "Car has been updated"}), 200
     except Exception as e:
         mysql.connection.rollback()
         return jsonify({"Error": str(e)}), 400
     finally:
         cursor.close()
+
 
 # DELETE
 @app.route('/cars/<string:VIN>', methods=['DELETE'])
@@ -213,21 +231,23 @@ def delete_car(VIN):
         return jsonify({"error": str(e)}), 400
     finally:
         cursor.close()
-#*****************************************************************************
 
 
-#************************YAR (transaction)************************************
+# *****************************************************************************
+
+
+# ************************YAR (transaction)************************************
 @app.route("/transactions", methods=["POST"])
 def add_transaction():
     try:
         data = request.json
         if not data or 'Transaction_ID' not in data or 'Part_ID' not in data or 'VIN' not in data or 'Date' not in data or 'Price' not in data or 'Employee_ID' not in data:
             return jsonify({'error': 'Missing required fields in request'}), 400
-        
+
         id = data['Transaction_ID']
         part_id = data['Part_ID']
         vin = data['VIN']
-        
+
         # Extract and format the date
         date_str = data['Date']
         date = datetime.strptime(date_str, '%a, %d %b %Y %H:%M:%S %Z').strftime('%Y-%m-%d')
@@ -236,7 +256,9 @@ def add_transaction():
         employee_id = data['Employee_ID']
 
         cursor = mysql.connection.cursor()
-        cursor.execute("INSERT INTO transactions (Transaction_ID, Part_ID, VIN, Date, Price, Employee_ID) VALUES (%s, %s, %s, %s, %s, %s)", (id, part_id, vin, date, price, employee_id))
+        cursor.execute(
+            "INSERT INTO transactions (Transaction_ID, Part_ID, VIN, Date, Price, Employee_ID) VALUES (%s, %s, %s, %s, %s, %s)",
+            (id, part_id, vin, date, price, employee_id))
         mysql.connection.commit()
 
         return jsonify({'message': 'Transaction created successfully'}), 201
@@ -245,8 +267,10 @@ def add_transaction():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
     finally:
-        cursor.close()    
-#read
+        cursor.close()
+    # read
+
+
 @app.route("/transactions", methods=['GET'])
 def get_transactions():
     try:
@@ -257,16 +281,16 @@ def get_transactions():
         return jsonify(transactions), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-    
-    
-@app.route("/transactions/<int:Transaction_ID>", methods = ['GET'])
+
+
+@app.route("/transactions/<int:Transaction_ID>", methods=['GET'])
 def get_single_transactions(Transaction_ID):
     cursor = mysql.connection.cursor()
     try:
         cursor.execute('SELECT * FROM transactions WHERE Transaction_ID = %s ', [Transaction_ID])
         transaction = cursor.fetchone()
         if transaction:
-           return jsonify(transaction), 200
+            return jsonify(transaction), 200
         else:
             return jsonify({'error': 'Transaction not found'}), 404
     except Exception as e:
@@ -275,62 +299,59 @@ def get_single_transactions(Transaction_ID):
 
 @app.route("/transactions/<int:Transaction_ID>", methods=['PUT'])
 def update_transaction(Transaction_ID):
-  cursor = mysql.connection.cursor()
-  try:
-    # Get existing transaction data (optional)
-    cursor.execute("SELECT * FROM Transactions WHERE Transaction_ID = %s", [Transaction_ID])
-    existing_transaction = cursor.fetchone()
+    cursor = mysql.connection.cursor()
+    try:
+        # Get existing transaction data (optional)
+        cursor.execute("SELECT * FROM Transactions WHERE Transaction_ID = %s", [Transaction_ID])
+        existing_transaction = cursor.fetchone()
 
-    if not existing_transaction:
-      return jsonify({'error': 'Transaction not found'}), 404
+        if not existing_transaction:
+            return jsonify({'error': 'Transaction not found'}), 404
 
-    # Extract and validate update data from request
-    data = request.get_json()
-    if not data:
-      return jsonify({'error': 'Missing update data in request'}), 400
+        # Extract and validate update data from request
+        data = request.get_json()
+        if not data:
+            return jsonify({'error': 'Missing update data in request'}), 400
 
-    # Prepare update parameters with potential sanitization (consider libraries like SQLAlchemy)
-    update_data = {}
-    if 'Part_ID' in data:
-      update_data['Part_ID'] = data['Part_ID']  # Sanitize if needed
-    if 'VIN' in data:
-      update_data['VIN'] = data['VIN']  # Sanitize if needed
-    if 'Date' in data:
-      update_data['Date'] = data['Date']
-    if 'Price' in data:
-      update_data['Price'] = data['Price']
-    if 'Employee_ID' in data:
-      update_data['Employee_ID'] = data['Employee_ID']  # Sanitize if needed
+        # Prepare update parameters with potential sanitization (consider libraries like SQLAlchemy)
+        update_data = {}
+        if 'Part_ID' in data:
+            update_data['Part_ID'] = data['Part_ID']  # Sanitize if needed
+        if 'VIN' in data:
+            update_data['VIN'] = data['VIN']  # Sanitize if needed
+        if 'Date' in data:
+            update_data['Date'] = data['Date']
+        if 'Price' in data:
+            update_data['Price'] = data['Price']
+        if 'Employee_ID' in data:
+            update_data['Employee_ID'] = data['Employee_ID']  # Sanitize if needed
 
-    set_clause = ", ".join([f"{key} = %s" for key in update_data.keys()])
-    update_query = f"UPDATE Transactions SET {set_clause} WHERE Transaction_ID = %s"
-    update_params = list(update_data.values()) + [Transaction_ID]
+        set_clause = ", ".join([f"{key} = %s" for key in update_data.keys()])
+        update_query = f"UPDATE Transactions SET {set_clause} WHERE Transaction_ID = %s"
+        update_params = list(update_data.values()) + [Transaction_ID]
 
-    cursor.execute(update_query, update_params)
+        cursor.execute(update_query, update_params)
 
-    if cursor.rowcount == 0:
-      return jsonify({'message': 'No changes made to transaction'}), 200  # Or a more specific message
+        if cursor.rowcount == 0:
+            return jsonify({'message': 'No changes made to transaction'}), 200  # Or a more specific message
 
-    mysql.connection.commit()
-    return jsonify({'message': 'Transaction updated successfully'}), 200
+        mysql.connection.commit()
+        return jsonify({'message': 'Transaction updated successfully'}), 200
 
-  except Exception as e:
-    mysql.connection.rollback()
-    return jsonify({'error': str(e)}), 500
+    except Exception as e:
+        mysql.connection.rollback()
+        return jsonify({'error': str(e)}), 500
 
-  finally:
-    cursor.close()
-
-
-
+    finally:
+        cursor.close()
 
 
 @app.route("/transactions/<int:Transaction_ID>", methods=['DELETE'])
 def delete_transactions(Transaction_ID):
-  cursor = mysql.connection.cursor()
-  try:
-    #used inner join to gather all the 
-    cursor.execute("""
+    cursor = mysql.connection.cursor()
+    try:
+        # used inner join to gather all the
+        cursor.execute("""
       DELETE t
       FROM Transactions t
       INNER JOIN Cars c ON t.VIN = c.VIN
@@ -339,24 +360,22 @@ def delete_transactions(Transaction_ID):
       WHERE t.Transaction_ID = %s
     """, [Transaction_ID])
 
-    # check if rows were deleted (optional)
-    if cursor.rowcount == 0:
-      return jsonify({'error': 'Transaction not found'}), 404
+        # check if rows were deleted (optional)
+        if cursor.rowcount == 0:
+            return jsonify({'error': 'Transaction not found'}), 404
 
-    mysql.connection.commit()
-    return jsonify({'message': 'Transaction deleted successfully'}), 200
+        mysql.connection.commit()
+        return jsonify({'message': 'Transaction deleted successfully'}), 200
 
-  except Exception as e:
-    mysql.connection.rollback()
-    return jsonify({'error': str(e)}), 500
+    except Exception as e:
+        mysql.connection.rollback()
+        return jsonify({'error': str(e)}), 500
 
-  finally:
-    cursor.close()
-
-
-#*****************************************************************************
+    finally:
+        cursor.close()
 
 
+# *****************************************************************************
 
 
 if __name__ == "__main__":
