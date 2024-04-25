@@ -1,18 +1,17 @@
-import "./App.css";
-import Navbar from "./Navbar";
+import React from 'react';
 import Ladysuzan from "./Ladysuzan";
-import Infowindow from "./components/Infowindow";
+import Infowindow from "./Infowindow";
 import ChatAssistant from "./ChatAssistant";
 
-function Home() {
+const Home = () => {
   return (
-    <div className="App">
-      <Navbar />
-      <ChatAssistant/>
+    <div>
+      <h1>Welcome to Home Page</h1>
       <Ladysuzan />
       <Infowindow />
+      <ChatAssistant />
     </div>
   );
 }
 
-export default App;
+export default Home;

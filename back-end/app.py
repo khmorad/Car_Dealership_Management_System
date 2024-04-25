@@ -132,42 +132,7 @@ def get_customers():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
-# Update Customer
-@app.route('/customer/<int:customer_id>', methods=['PUT'])
-def update_customer(customer_id):
-    try:
-        cur = mysql.connection.cursor()
-        # Extract data from request
-        data = request.json
-        name = data['name']
-        dob = data['dob']
-        address = data['address']
-        phone_number = data['phone_number']
-        email = data['email']
-        employee_id = data['employee_id']
-        # Update customer in database
-        cur.execute(
-            "UPDATE Customers SET Name = %s, DOB = %s, Address = %s, PhoneNumber = %s, Email = %s, EmployeeID = %s WHERE CustomerID = %s",
-            (name, dob, address, phone_number, email, employee_id, customer_id)
-        )
-        mysql.connection.commit()
-        cur.close()
-        return jsonify({"message": "Customer updated successfully"}), 200
-    except Exception as e:
-        return jsonify({"error": str(e)}), 400
 
-# Delete Customer
-@app.route('/customer/<int:customer_id>', methods=['DELETE'])
-def delete_customer(customer_id):
-    try:
-        cur = mysql.connection.cursor()
-        # Delete customer from database
-        cur.execute("DELETE FROM Customers WHERE CustomerID = %s", (customer_id,))
-        mysql.connection.commit()
-        cur.close()
-        return jsonify({"message": "Customer deleted successfully"}), 200
-    except Exception as e:
-        return jsonify({"error": str(e)}), 400
 # *****************************************************************************
 
 # ************************Eddie (Car, Car_part table)**************************
