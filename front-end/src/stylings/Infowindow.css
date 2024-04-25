@@ -11,10 +11,11 @@
   margin-top: 2%;
   margin-left: 6%;
   padding: 4px;
-  background-color: rgba(136, 137, 137, 0.147);
+  background-color: rgba(0, 0, 0, 0.055);
   flex: .5;
   height: 460px;
   border-radius: 6px;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
   overflow: hidden;
 }
 .filterContainer ul {

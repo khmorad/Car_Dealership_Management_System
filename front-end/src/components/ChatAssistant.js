@@ -46,7 +46,6 @@ export default function ChatAssistant() {
         messages: [
           promptMessage,
           { role: "user", content: message.content },
-          // You might want to add additional system messages or context here if needed
         ],
       };
   
