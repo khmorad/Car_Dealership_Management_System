@@ -14,6 +14,13 @@ Add SoldStatus
 export default function Infowindow() {
 
   const carFilter = useRef(null)
+  const suvCheckBox = useRef(null)
+  const truckCheckBox = useRef(null)
+  const hybridCheckBox = useRef(null)
+  const coupeCheckBox = useRef(null)
+  const convertableCheckbox = useRef(null)
+  const sedanCheckbox = useRef(null)
+
   const [filteredCars, setFilteredCars] = useState([]);
   const carInfo = [
     {
@@ -125,6 +132,28 @@ export default function Infowindow() {
     }
 
   }
+
+  const handleCheckFilter = ()=>{
+    let filteredCar = [...carInfo]
+    if (truckCheckBox.current && truckCheckBox.current.checked) {
+      filteredCar = filteredCar.filter(car => car.Type.toLowerCase() === 'truck');
+    }
+    if (sedanCheckbox.current && sedanCheckbox.current.checked) {
+      filteredCar = filteredCar.filter(car => car.Type.toLowerCase() === 'sedan');
+    }
+    if (hybridCheckBox.current && hybridCheckBox.current.checked) {
+      filteredCar = filteredCar.filter(car => car.Type.toLowerCase() === 'hybrid');
+    }
+    if (suvCheckBox.current && suvCheckBox.current.checked) {
+      filteredCar = filteredCar.filter(car => car.Type.toLowerCase() === 'suv');
+    }
+    if (coupeCheckBox.current && coupeCheckBox.current.checked) {
+      filteredCar = filteredCar.filter(car => car.Type.toLowerCase() === 'coupe');
+    }
+
+
+    setFilteredCars(filteredCar)
+  }
   //show full page of a car
   return (
     <div className="container">
@@ -135,12 +164,12 @@ export default function Infowindow() {
     <input placeholder="fliter results..." ref={carFilter} className="filterSearch" onChange={handleFilter}></input>
   <ul>
           
-          <li><input type="checkbox" className="filter"></input>Suv</li>
-          <li><input type="checkbox" className="filter"></input>Truck</li>
-          <li><input type="checkbox" className="filter"></input>Coup</li>
-          <li><input type="checkbox" className="filter"></input>Convertible</li>
-          <li><input type="checkbox" className="filter"></input>Sedan</li>
-          <li><input type="checkbox" className="filter"></input>Hybrid</li>
+          <li><input type="checkbox" ref={suvCheckBox} className="filter" value="suv" onChange={handleCheckFilter}></input>Suv</li>
+          <li><input type="checkbox" ref={truckCheckBox} className="filter"  value="truck"onChange={handleCheckFilter}></input>Truck</li>
+          <li><input type="checkbox" ref={coupeCheckBox} className="filter" value="coupe"onChange={handleCheckFilter}></input>Coupe</li>
+          <li><input type="checkbox" ref={convertableCheckbox} className="filter" value="convertible"onChange={handleCheckFilter}></input>Convertible</li>
+          <li><input type="checkbox" ref={sedanCheckbox} className="filter" value="sedan"onChange={handleCheckFilter}></input>Sedan</li>
+          <li><input type="checkbox"ref={hybridCheckBox} className="filter" value="hybrid"onChange={handleCheckFilter}></input>Hybrid</li>
   
   </ul>
  
