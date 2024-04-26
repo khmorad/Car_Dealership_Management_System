@@ -1,6 +1,6 @@
 import React from "react";
 import "../stylings/Navbar.css";
-//import './assets/google.png'
+import googleImage from "../assets/google.png"
 export default function Navbar() {
   const handleGoogleAuthClick = () => {
     const CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID
@@ -33,7 +33,8 @@ export default function Navbar() {
           <a href="#contact">Contact</a>
         </li>
       </ul>
-      <button className="button-55" onClick={handleGoogleAuthClick}>Login</button>
+      <button className="button-55" onClick={handleGoogleAuthClick} ><img src={googleImage} alt='Google' style={{ width: '12px', height: '12px', marginRight: "5px" }}/>
+Login</button>
     </nav>
   );
 }
