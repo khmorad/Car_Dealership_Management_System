@@ -1,11 +1,14 @@
 from flask import Flask, request, jsonify
 from flask_mysqldb import MySQL
 from datetime import datetime
+from flask_cors import CORS
 import os
 from dotenv import load_dotenv
 
 load_dotenv()
 app = Flask(__name__)
+CORS(app)
+
 
 app.config['MYSQL_HOST'] = os.getenv("host")
 app.config['MYSQL_USER'] = os.getenv("user")
@@ -15,7 +18,7 @@ app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 
 # Initialize MySQL
 mysql = MySQL(app)
-
+CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}})
 
 # ************************Rio Taiga(Employee, Customer table)***********************************
 @app.route('/employee', methods=['POST'])
@@ -139,7 +142,7 @@ def get_customers():
 
 ################ Cars #################
 # GET method for all cars (a single car if using car_id)
-@app.route('/browse/cars/<string:car_id>', methods=['GET'])
+@app.route('/cars/<string:car_id>', methods=['GET'])
 def get_one_car(car_id):
     cursor = mysql.connection.cursor()
     try:
