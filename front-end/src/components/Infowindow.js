@@ -28,7 +28,7 @@ export default function Infowindow() {
     fetch('http://127.0.0.1:5000/cars/all') // Assuming Flask server is running on http://127.0.0.1:5000/
       .then(response => response.json())
       .then(data => {
-        serCarInfo(data, console.log(carInfo));
+        serCarInfo(data);
       })
       .catch(error => console.error('Error fetching employees:', error));
   }, []);
@@ -116,7 +116,6 @@ export default function Infowindow() {
   ];
   const [showElement, setShowElement] = useState(true)
   useEffect(()=>{
-    setFilteredCars(carInfo)
     const handleResize = ()=>{
       if(window.innerWidth < 800){
         setShowElement(false)
@@ -128,7 +127,15 @@ export default function Infowindow() {
     window.addEventListener('resize', handleResize)
 
   }, [])
-
+  useEffect(() => {
+    fetch('http://127.0.0.1:5000/cars/all')
+      .then(response => response.json())
+      .then(data => {
+        serCarInfo(data);
+        setFilteredCars(data); // Update filteredCars state after fetching data
+      })
+      .catch(error => console.error('Error fetching cars:', error));
+  }, []);
 
   const handleFilter = ()=>{
     const searchedCar = carFilter.current.value.toLowerCase()
