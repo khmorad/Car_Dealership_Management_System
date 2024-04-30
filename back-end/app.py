@@ -1,11 +1,14 @@
 from flask import Flask, request, jsonify
 from flask_mysqldb import MySQL
 from datetime import datetime
+from flask_cors import CORS
 import os
 from dotenv import load_dotenv
 
 load_dotenv()
 app = Flask(__name__)
+CORS(app)
+
 
 app.config['MYSQL_HOST'] = os.getenv("host")
 app.config['MYSQL_USER'] = os.getenv("user")
@@ -15,7 +18,7 @@ app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 
 # Initialize MySQL
 mysql = MySQL(app)
-
+CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}})
 
 # ************************Rio Taiga(Employee, Customer table)***********************************
 @app.route('/employee', methods=['POST'])
@@ -171,6 +174,8 @@ def delete_customer(customer_id):
 # *****************************************************************************
 
 # ************************Eddie (Car, Car_part table)**************************
+
+################ Cars #################
 # GET method for all cars (a single car if using car_id)
 @app.route('/cars/<string:car_id>', methods=['GET'])
 def get_one_car(car_id):
@@ -192,7 +197,7 @@ def get_one_car(car_id):
 
 
 # CREATE method for a single car
-@app.route('/cars', methods=['POST'])
+@app.route('/add/cars', methods=['POST'])
 def create_car():
     cursor = mysql.connection.cursor()
     try:
@@ -206,16 +211,22 @@ def create_car():
             return jsonify({"Error": "Car ID is already existed"}), 400
         # Query database to insert new car record
         cursor.execute(
-            "INSERT INTO Cars (VIN, Year_of_manufacturing, Brand, Model, Trim, Mileage, Type, Exterior_color, Drivetrain, Gas_Type, MPG, Interior_color, Seats_no, Price, Customer_ID) VALUES (%(VIN)s, %(Year_of_manufacturing)s, %(Brand)s, %(Model)s, %(Trim)s, %(Mileage)s, %(Type)s, %(Exterior_color)s, %(Drivetrain)s, %(Gas_Type)s, %(MPG)s, %(Interior_color)s, %(Seats_no)s, %(Price)s, %(Customer_ID)s)",
+            """INSERT INTO Cars 
+            (VIN, Year_of_manufacturing, Brand, Model, Trim, Mileage, Type, Gas_Type, Price, image_url, Customer_ID) 
+            VALUES 
+            (%(VIN)s, %(Year_of_manufacturing)s, %(Brand)s, %(Model)s, %(Trim)s, %(Mileage)s, %(Type)s, %(Gas_Type)s,
+             %(Price)s, %(image_url)s, %(Customer_ID)s)""",
             request_data)
+        mysql.connection.commit()
         return jsonify({"Success": "Car is added"}), 200
     except Exception as e:
+        mysql.connection.rollback()
         return jsonify({"error": str(e)}), 400
     finally:
         cursor.close()
 
 
-@app.route("/cars", methods=["PUT"])
+@app.route("/update/cars", methods=["PUT"])
 def update_car():
     cursor = mysql.connection.cursor()
     try:
@@ -234,7 +245,10 @@ def update_car():
             return jsonify({"Error": "Customer does not exist, please add customer before adding car"}), 404
         # Query database to update record
         cursor.execute(
-            "UPDATE Cars SET Year_of_manufacturing = %(Year_of_manufacturing)s, Brand = %(Brand)s, Model = %(Model)s, Trim = %(Trim)s, Mileage = %(Mileage)s, Type = %(Type)s, Exterior_color = %(Exterior_color)s, Drivetrain = %(Drivetrain)s, Gas_Type = %(Gas_Type)s, MPG = %(MPG)s, Interior_color = %(Interior_color)s, Seats_no = %(Seats_no)s, Price = %(Price)s, Customer_ID = %(Customer_ID)s WHERE VIN = %(VIN)s",
+            """UPDATE Cars 
+            SET Year_of_manufacturing = %(Year_of_manufacturing)s, Brand = %(Brand)s, Model = %(Model)s, Trim = %(Trim)s, 
+            Mileage = %(Mileage)s, Type = %(Type)s, Gas_Type = %(Gas_Type)s, Price = %(Price)s, image_url = %(image_url)s, 
+            Customer_ID = %(Customer_ID)s WHERE VIN = %(VIN)s""",
             request_data)
         mysql.connection.commit()
         return jsonify({"Success": "Car has been updated"}), 200
@@ -246,7 +260,7 @@ def update_car():
 
 
 # DELETE
-@app.route('/cars/<string:VIN>', methods=['DELETE'])
+@app.route('/remove/cars/<string:VIN>', methods=['DELETE'])
 def delete_car(VIN):
     cursor = mysql.connection.cursor()
     try:
@@ -267,7 +281,100 @@ def delete_car(VIN):
     finally:
         cursor.close()
 
+################ Car part #################
+# GET method for all parts (a single part if using part_id)
+@app.route('/browse/parts/<int:part_id>', methods=['GET'])
+def get_part(part_id):
+    cursor = mysql.connection.cursor()
+    try:
+        if part_id == "all":
+            cursor.execute("SELECT * FROM Car_part")
+            return jsonify(cursor.fetchall()), 200
+        else:
+            cursor.execute("SELECT * FROM Car_part WHERE Part_ID=%s", (part_id,))
+            data = cursor.fetchone()
+            if not data:
+                return jsonify({"Error": "Part ID is invalid"}), 404
+            return jsonify(data), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+    finally:
+        cursor.close()
 
+
+# CREATE method for a part
+@app.route('/add/parts', methods=['POST'])
+def create_part():
+    cursor = mysql.connection.cursor()
+    try:
+        request_data = request.get_json()
+        # Query database for existed car if there is any
+        cursor.execute("SELECT * FROM Car_part WHERE Part_ID=%(Part_ID)s", request_data)
+        returned_data = cursor.fetchall()
+        # If there is existed record, return error 400
+        if returned_data:
+            cursor.close()
+            return jsonify({"Error": "Part is already existed"}), 400
+        # Query database to insert new car record
+        cursor.execute(
+            """INSERT INTO Car_part (Part_ID, Name, Brand, Fitment, Price) 
+            VALUES (%(Part_ID)s, %(Name)s, %(Brand)s, %(Fitment)s, %(Price)s)""",
+            request_data)
+        mysql.connection.commit()
+        return jsonify({"Success": "Part is added"}), 200
+    except Exception as e:
+        mysql.connection.rollback()
+        return jsonify({"error": str(e)}), 400
+    finally:
+        cursor.close()
+
+# UPDATE a part
+@app.route("/update/parts", methods=["PUT"])
+def update_part():
+    cursor = mysql.connection.cursor()
+    try:
+        request_data = request.get_json()
+        # Query database to verify valid Part_ID
+        cursor.execute("SELECT * FROM Car_part WHERE Part_ID = %(Part_ID)s", request_data)
+        returned_data = cursor.fetchone()
+        # If Part_ID does not exist, return error 404
+        if not returned_data:
+            return jsonify({"Error": "Part does not exist"}), 404
+        # Query database to update record
+        cursor.execute(
+            """UPDATE Car_part 
+            SET Name = %(Name)s, Brand = %(Brand)s, Fitment = %(Fitment)s, Price = %(Price)s WHERE Part_ID = %(Part_ID)s""",
+            request_data)
+        mysql.connection.commit()
+        return jsonify({"Success": "Part has been updated"}), 200
+    except Exception as e:
+        mysql.connection.rollback()
+        return jsonify({"Error": str(e)}), 400
+    finally:
+        cursor.close()
+
+
+# DELETE a part
+@app.route('/remove/parts/<int:part_id>', methods=['DELETE'])
+def delete_part(part_id):
+    cursor = mysql.connection.cursor()
+    try:
+        # Query database to verify valid Part_ID
+        cursor.execute(""" SELECT * FROM Car_part WHERE Part_ID=%s """, (part_id,))
+        returned_data = cursor.fetchall()
+        # If Part_ID does not exist, return error 404
+        if not returned_data:
+            cursor.close()
+            return jsonify({"Error": "Part doesn't existed"}), 404
+        # Query database to delete matched record
+        cursor.execute(""" DELETE FROM Car_part WHERE Part_ID=%s """, (part_id,))
+        mysql.connection.commit()
+        return jsonify({"Success": "Part is deleted"}), 200
+    except Exception as e:
+        mysql.connection.rollback()
+        return jsonify({"error": str(e)}), 400
+    finally:
+        cursor.close()
 # *****************************************************************************
 
 

@@ -22,7 +22,17 @@ export default function Infowindow() {
   const sedanCheckbox = useRef(null)
 
   const [filteredCars, setFilteredCars] = useState([]);
-  const carInfo = [
+  const [carInfo, serCarInfo] = useState([]);
+
+  useEffect(() => {
+    fetch('http://127.0.0.1:5000/cars/all') // Assuming Flask server is running on http://127.0.0.1:5000/
+      .then(response => response.json())
+      .then(data => {
+        serCarInfo(data);
+      })
+      .catch(error => console.error('Error fetching employees:', error));
+  }, []);
+  const carssInfo = [
     {
       VIN: 'ABC123XYZ456789',
       Brand: 'Toyota',
@@ -106,7 +116,6 @@ export default function Infowindow() {
   ];
   const [showElement, setShowElement] = useState(true)
   useEffect(()=>{
-    setFilteredCars(carInfo)
     const handleResize = ()=>{
       if(window.innerWidth < 800){
         setShowElement(false)
@@ -118,7 +127,15 @@ export default function Infowindow() {
     window.addEventListener('resize', handleResize)
 
   }, [])
-
+  useEffect(() => {
+    fetch('http://127.0.0.1:5000/cars/all')
+      .then(response => response.json())
+      .then(data => {
+        serCarInfo(data);
+        setFilteredCars(data); // Update filteredCars state after fetching data
+      })
+      .catch(error => console.error('Error fetching cars:', error));
+  }, []);
 
   const handleFilter = ()=>{
     const searchedCar = carFilter.current.value.toLowerCase()
@@ -161,7 +178,12 @@ export default function Infowindow() {
     {showElement &&
     <div className="filterContainer">
     <div className="insideContainer">
-    <input placeholder="fliter results..." ref={carFilter} className="filterSearch" onChange={handleFilter}></input>
+    <div class="group">
+  <input required="" type="text" class="input" placeholder="filter results..." ref={carFilter}  onChange={handleFilter}></input>
+  <span class="highlight"></span>
+  <span class="bar"></span>
+  
+</div>
   <ul>
           
           <li><input type="checkbox" ref={suvCheckBox} className="filter" value="suv" onChange={handleCheckFilter}></input>Suv</li>
@@ -182,7 +204,7 @@ export default function Infowindow() {
       {filteredCars.map((car, index) => (
         <div className="infoCard" key={index}>
           <div className="cargallery">
-            <img src={car.picture} alt="Car Picture" />
+            <img src={car.image_url} alt="Car Picture" />
           </div>
           <div className="carInfo">
             <h2>{car.Brand} {car.Model}</h2>
