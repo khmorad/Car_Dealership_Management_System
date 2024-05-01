@@ -58,7 +58,7 @@ export default function Navbar() {
           <a href="#contact">Contact</a>
         </li>
       </ul>
-      <button className="button-55" onClick={handleGoogleAuthClick} ><img src={googleImage} alt='Google' style={{ width: '12px', height: '12px', marginRight: "5px" }}/>
+      <button className="button-55" onClick={handleGoogleAuthClick} >
 Login</button>
     </nav>
   );

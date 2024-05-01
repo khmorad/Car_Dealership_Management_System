@@ -77,7 +77,7 @@
 
 .group {
   position: relative;
-  margin-bottom: 8px;
+  margin-bottom: 22px;
  }
  
  .input {
@@ -156,6 +156,8 @@
  .input:focus ~ .highlight {
   animation: inputHighlighter 0.3s ease;
  }
+ 
+
  
  @keyframes inputHighlighter {
   from {

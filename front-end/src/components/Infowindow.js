@@ -25,7 +25,7 @@ export default function Infowindow() {
   const [carInfo, serCarInfo] = useState([]);
 
   useEffect(() => {
-    fetch('http://127.0.0.1:5000/cars/all') // Assuming Flask server is running on http://127.0.0.1:5000/
+    fetch('http://127.0.0.1:5000/cars/all') 
       .then(response => response.json())
       .then(data => {
         serCarInfo(data);
@@ -132,7 +132,7 @@ export default function Infowindow() {
       .then(response => response.json())
       .then(data => {
         serCarInfo(data);
-        setFilteredCars(data); // Update filteredCars state after fetching data
+        setFilteredCars(data); 
       })
       .catch(error => console.error('Error fetching cars:', error));
   }, []);
@@ -184,17 +184,18 @@ export default function Infowindow() {
   <span className="bar"></span>
   
 </div>
+<div className="filter-checkbox">
   <ul>
           
-          <li><input type="checkbox" ref={suvCheckBox} className="filter" value="suv" onChange={handleCheckFilter}></input>Suv</li>
-          <li><input type="checkbox" ref={truckCheckBox} className="filter"  value="truck"onChange={handleCheckFilter}></input>Truck</li>
-          <li><input type="checkbox" ref={coupeCheckBox} className="filter" value="coupe"onChange={handleCheckFilter}></input>Coupe</li>
-          <li><input type="checkbox" ref={convertableCheckbox} className="filter" value="convertible"onChange={handleCheckFilter}></input>Convertible</li>
-          <li><input type="checkbox" ref={sedanCheckbox} className="filter" value="sedan"onChange={handleCheckFilter}></input>Sedan</li>
-          <li><input type="checkbox"ref={hybridCheckBox} className="filter" value="hybrid"onChange={handleCheckFilter}></input>Hybrid</li>
+      <li><input type="checkbox" ref={suvCheckBox} className="filter" value="suv" onChange={handleCheckFilter}></input>Suv</li>
+      <li><input type="checkbox" ref={truckCheckBox} className="filter"  value="truck"onChange={handleCheckFilter}></input>Truck</li>
+      <li><input type="checkbox" ref={coupeCheckBox} className="filter" value="coupe"onChange={handleCheckFilter}></input>Coupe</li>
+      <li><input type="checkbox" ref={convertableCheckbox} className="filter" value="convertible"onChange={handleCheckFilter}></input>Convertible</li>
+      <li><input type="checkbox" ref={sedanCheckbox} className="filter" value="sedan"onChange={handleCheckFilter}></input>Sedan</li>
+      <li><input type="checkbox"ref={hybridCheckBox} className="filter" value="hybrid"onChange={handleCheckFilter}></input>Hybrid</li>
   
   </ul>
- 
+  </div>
 
   </div>
   </div>}
