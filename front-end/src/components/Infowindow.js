@@ -29,8 +29,17 @@ export default function Infowindow() {
   ]
   const renderCarWindow = () => {
     if (!selectedCar) return null; // Return null if no car is selected
+  
+    // Define the style object for the car window
+    const carWindowStyle = {
+      padding: "6px",
+      height: selectedCar ? "auto" : "1", 
+      overflow: "hidden", 
+      transition: "height 0.2s", 
+    };
+  
     return (
-      <div className="carWindow">
+      <div className="carWindow" style={carWindowStyle}>
         <div className="carImage">
           <img src={selectedCar.image_url} alt="Car Picture" />
         </div>
@@ -41,10 +50,20 @@ export default function Infowindow() {
               <span className="detailLabel">Year:</span> {selectedCar.Year_of_manufacturing}
             </li>
             <li>
-              <span className="detailLabel">Mileage:</span> {selectedCar.Mileage} miles
+              <span className="detailLabel">Price:</span> ${selectedCar.Price}
             </li>
             <li>
-              <span className="detailLabel">Price:</span> ${selectedCar.Price}
+              <span className="detailLabel">Mileage:</span> {selectedCar.Mileage} miles
+            </li>
+
+            <li>
+              <span className="detailLabel">Trim:</span> {selectedCar.Trim}
+            </li>
+            <li>
+              <span className="detailLabel">Type:</span> {selectedCar.Type}
+            </li>
+            <li>
+              <span className="detailLabel">Gas type:</span> {selectedCar.Gas_Type}
             </li>
             {/* Add more details as needed */}
           </ul>
@@ -59,7 +78,7 @@ export default function Infowindow() {
       .then(data => {
         serCarInfo(data);
       })
-      .catch(error => console.error('Error fetching employees:', error));
+      .catch(error => console.error('Error fetching cars:', error));
   }, []);
   const carssInfo = [
     {
@@ -226,7 +245,7 @@ export default function Infowindow() {
       )}
       <div className="infoContainer">
         {filteredCars.map((car, index) => (
-          <div className="infoCard" key={index}>
+          <div className="infoCard" key={index} onClick={() => handleClick(car) }>
             <div className="cargallery">
               <img src={car.image_url} alt="Car Picture" />
             </div>
@@ -243,7 +262,7 @@ export default function Infowindow() {
                   <span className="detailLabel">Price:</span> {`$${car.Price}`}
                 </li>
               </ul>
-              <button onClick={() => handleClick(car) }>View Details</button> {/* Button to show car details */}
+
             </div>
           </div>
         ))}

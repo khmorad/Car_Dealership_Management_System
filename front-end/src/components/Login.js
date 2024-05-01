@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect} from 'react';
 import '../stylings/Login.css';
 import {
   MDBBtn,
@@ -18,7 +18,27 @@ export default function Login() {
   const [isEmployee, setIsEmployee] = useState(false);
   const [isCustomer, setIsCustomer] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false); // New state variable for login status
-
+  const [employees, setEmployees] = useState([])
+  const [customers, setCustomers] = useState([])
+ 
+  useEffect(() => {
+    fetch('http://127.0.0.1:5000/employee') 
+      .then(response => response.json())
+      .then(data => {
+        setEmployees(data);
+        console.log('Employees:', data);
+      })
+      .catch(error => console.error('Error fetching employees:', error));
+  }, []);
+  useEffect(() => {
+    fetch('http://127.0.0.1:5000/customer') 
+      .then(response => response.json())
+      .then(data => {
+        setCustomers(data);
+        console.log('Customers:', data);
+      })
+      .catch(error => console.error('Error fetching customers:', error));
+  }, []);
   const handleUsernameChange = (e) => {
     setUsername(e.target.value);
   };
@@ -34,14 +54,23 @@ export default function Login() {
   const handleCustomerCheckboxChange = () => {
     setIsCustomer(!isCustomer);
   };
-
-  // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Here, you can perform any further actions, such as validation or sending the data to a server
-    console.log('Submitted:', { username, password, isEmployee, isCustomer });
-    // For demonstration purposes, assuming successful login when form is submitted
-    setLoggedIn(true);
+  
+    // Assuming usernames are unique across employees and customers
+    const userExists = isEmployee
+      ? employees.some((employee) => employee.Name === username && employee.Password === password)
+      : customers.some((customer) => customer.Name === username && customer.Password === password);
+  
+    if (userExists) {
+      // Login successful
+      console.log('Login successful');
+      setLoggedIn(true); // Update the state to reflect the user's login status
+    } else {
+      // Login failed
+      console.error('Login failed');
+      // You can display an error message to the user if needed
+    }
   };
 
   // Render login form if not logged in
