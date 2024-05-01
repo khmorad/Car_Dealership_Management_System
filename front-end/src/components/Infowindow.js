@@ -23,7 +23,36 @@ export default function Infowindow() {
 
   const [filteredCars, setFilteredCars] = useState([]);
   const [carInfo, serCarInfo] = useState([]);
-
+  const [selectedCar, setSelectedCar] = useState(null);
+  const handleClick = (car)=>[
+    setSelectedCar(car)
+  ]
+  const renderCarWindow = () => {
+    if (!selectedCar) return null; // Return null if no car is selected
+    return (
+      <div className="carWindow">
+        <div className="carImage">
+          <img src={selectedCar.image_url} alt="Car Picture" />
+        </div>
+        <div className="carDetails">
+          <h2>{selectedCar.Brand} {selectedCar.Model}</h2>
+          <ul>
+            <li>
+              <span className="detailLabel">Year:</span> {selectedCar.Year_of_manufacturing}
+            </li>
+            <li>
+              <span className="detailLabel">Mileage:</span> {selectedCar.Mileage} miles
+            </li>
+            <li>
+              <span className="detailLabel">Price:</span> ${selectedCar.Price}
+            </li>
+            {/* Add more details as needed */}
+          </ul>
+          <button onClick={() => setSelectedCar(null)}>Close</button> {/* Close button */}
+        </div>
+      </div>
+    );
+  };
   useEffect(() => {
     fetch('http://127.0.0.1:5000/cars/all') 
       .then(response => response.json())
@@ -174,58 +203,55 @@ export default function Infowindow() {
   //show full page of a car
   return (
     <div className="container">
-      
-    {showElement &&
-    <div className="filterContainer">
-    <div className="insideContainer">
-    <div className="group">
-  <input required="" type="text" className="input" placeholder="filter results..." ref={carFilter}  onChange={handleFilter}></input>
-  <span className="highlight"></span>
-  <span className="bar"></span>
-  
-</div>
-<div className="filter-checkbox">
-  <ul>
-          
-      <li><input type="checkbox" ref={suvCheckBox} className="filter" value="suv" onChange={handleCheckFilter}></input>Suv</li>
-      <li><input type="checkbox" ref={truckCheckBox} className="filter"  value="truck"onChange={handleCheckFilter}></input>Truck</li>
-      <li><input type="checkbox" ref={coupeCheckBox} className="filter" value="coupe"onChange={handleCheckFilter}></input>Coupe</li>
-      <li><input type="checkbox" ref={convertableCheckbox} className="filter" value="convertible"onChange={handleCheckFilter}></input>Convertible</li>
-      <li><input type="checkbox" ref={sedanCheckbox} className="filter" value="sedan"onChange={handleCheckFilter}></input>Sedan</li>
-      <li><input type="checkbox"ref={hybridCheckBox} className="filter" value="hybrid"onChange={handleCheckFilter}></input>Hybrid</li>
-  
-  </ul>
-  </div>
-
-  </div>
-  </div>}
-    <div className="infoContainer">
-
-      
-      {filteredCars.map((car, index) => (
-        <div className="infoCard" key={index}>
-          <div className="cargallery">
-            <img src={car.image_url} alt="Car Picture" />
-          </div>
-          <div className="carInfo">
-            <h2>{car.Brand} {car.Model}</h2>
-            <ul className="carDetails">
-              <li>
-                <span className="detailLabel">Year:</span> {car.Year_of_manufacturing}
-              </li>
-              <li>
-                <span className="detailLabel">Mileage:</span> {car.Mileage} miles
-              </li>
-              <li>
-                <span className="detailLabel">Price:</span> {`$${car.Price}`}
-              </li>
-            </ul>
+      {showElement && (
+        <div className="filterContainer">
+          <div className="insideContainer">
+            <div className="group">
+              <input required="" type="text" className="input" placeholder="filter results..." ref={carFilter} onChange={handleFilter}></input>
+              <span className="highlight"></span>
+              <span className="bar"></span>
+            </div>
+            <div className="filter-checkbox">
+              <ul>
+                <li><input type="checkbox" ref={suvCheckBox} className="filter" value="suv" onChange={handleCheckFilter}></input>Suv</li>
+                <li><input type="checkbox" ref={truckCheckBox} className="filter" value="truck" onChange={handleCheckFilter}></input>Truck</li>
+                <li><input type="checkbox" ref={coupeCheckBox} className="filter" value="coupe" onChange={handleCheckFilter}></input>Coupe</li>
+                <li><input type="checkbox" ref={convertableCheckbox} className="filter" value="convertible" onChange={handleCheckFilter}></input>Convertible</li>
+                <li><input type="checkbox" ref={sedanCheckbox} className="filter" value="sedan" onChange={handleCheckFilter}></input>Sedan</li>
+                <li><input type="checkbox" ref={hybridCheckBox} className="filter" value="hybrid" onChange={handleCheckFilter}></input>Hybrid</li>
+              </ul>
+            </div>
           </div>
         </div>
-      ))}
+      )}
+      <div className="infoContainer">
+        {filteredCars.map((car, index) => (
+          <div className="infoCard" key={index}>
+            <div className="cargallery">
+              <img src={car.image_url} alt="Car Picture" />
+            </div>
+            <div className="carInfo">
+              <h2>{car.Brand} {car.Model}</h2>
+              <ul className="carDetails">
+                <li>
+                  <span className="detailLabel">Year:</span> {car.Year_of_manufacturing}
+                </li>
+                <li>
+                  <span className="detailLabel">Mileage:</span> {car.Mileage} miles
+                </li>
+                <li>
+                  <span className="detailLabel">Price:</span> {`$${car.Price}`}
+                </li>
+              </ul>
+              <button onClick={() => handleClick(car) }>View Details</button> {/* Button to show car details */}
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="middleContainer">
+      {renderCarWindow()} 
     </div>
     </div>
- 
   );
 }
 
