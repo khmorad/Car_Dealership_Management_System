@@ -6,11 +6,14 @@ import Infowindow from "./components/Infowindow";
 import ChatAssistant from "./components/ChatAssistant";
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Home from "./Home";
+import Login from "./components/Login";
+
 function App() {
   return (
     <div className="App">
       <ChatAssistant/>
       <Home/>
+      <Login/>
     </div>
   );
 }

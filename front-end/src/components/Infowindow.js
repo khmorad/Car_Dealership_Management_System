@@ -178,10 +178,10 @@ export default function Infowindow() {
     {showElement &&
     <div className="filterContainer">
     <div className="insideContainer">
-    <div class="group">
-  <input required="" type="text" class="input" placeholder="filter results..." ref={carFilter}  onChange={handleFilter}></input>
-  <span class="highlight"></span>
-  <span class="bar"></span>
+    <div className="group">
+  <input required="" type="text" className="input" placeholder="filter results..." ref={carFilter}  onChange={handleFilter}></input>
+  <span className="highlight"></span>
+  <span className="bar"></span>
   
 </div>
   <ul>
