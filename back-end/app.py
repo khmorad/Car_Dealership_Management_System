@@ -126,7 +126,7 @@ def get_customers():
     try:
         cur = mysql.connection.cursor()
         # Query database for customers (excluding password field)
-        cur.execute("SELECT Customer_ID, Name, DOB, Address, PhoneNumber, Email, Employee_ID FROM Customers")
+        cur.execute("SELECT * FROM Customers")
         customers = cur.fetchall()
         cur.close()
         return jsonify(customers), 200

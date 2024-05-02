@@ -20,7 +20,8 @@ export default function Login() {
   const [loggedIn, setLoggedIn] = useState(false); // New state variable for login status
   const [employees, setEmployees] = useState([])
   const [customers, setCustomers] = useState([])
- 
+  const [customerName, setCustomerName] = useState(null)
+  const [employeeName, setEmployeeName] = useState(null)
   useEffect(() => {
     fetch('http://127.0.0.1:5000/employee') 
       .then(response => response.json())
@@ -57,7 +58,7 @@ export default function Login() {
   const handleSubmit = (e) => {
     e.preventDefault();
   
-    // Assuming usernames are unique across employees and customers
+    //implementing a checker to see the login system
     const userExists = isEmployee
       ? employees.some((employee) => employee.Name === username && employee.Password === password)
       : customers.some((customer) => customer.Name === username && customer.Password === password);
@@ -65,6 +66,12 @@ export default function Login() {
     if (userExists) {
       // Login successful
       console.log('Login successful');
+      if(isEmployee){
+        setEmployeeName(username)
+        console.log(`welcome ${username}`)
+      }else{
+        setCustomerName(username)
+      }
       setLoggedIn(true); // Update the state to reflect the user's login status
     } else {
       // Login failed

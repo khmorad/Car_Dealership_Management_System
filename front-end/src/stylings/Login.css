@@ -5,7 +5,7 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 40vw;
+    width: 400px;
     height: 500px;
     background: white;
     border-radius: 10px;
@@ -14,8 +14,12 @@
   }
   .checkboxes{
     margin-bottom: 10px;
+    color: #807e7e;
   }
-  
+  .checkboxes input{
+    margin-right: 8px;
+  }
+
   .center h1{
     text-align: center;
     padding: 0 0 20px 0;
