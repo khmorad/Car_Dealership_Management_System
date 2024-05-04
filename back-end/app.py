@@ -4,7 +4,6 @@ from datetime import datetime
 from flask_cors import CORS
 import os
 from dotenv import load_dotenv
-
 load_dotenv()
 app = Flask(__name__)
 CORS(app)
@@ -102,17 +101,19 @@ def create_customer():
         cur = mysql.connection.cursor()
         # Extract data from request
         data = request.json
-        name = data['name']
-        dob = data['dob']
-        address = data['address']
-        phone_number = data['phone_number']
-        email = data['email']
-        employee_id = data['employee_id']
-        password = data['password']  # Add password field
+        customer_id = data['Customer_ID']
+        name = data['Name']
+        dob_str = data['DOB']
+        dob = datetime.strptime(dob_str, '%a, %d %b %Y %H:%M:%S %Z').strftime('%Y-%m-%d')
+        address = data['Address']
+        phone_number = data['PhoneNumber']
+        email = data['Email']
+        employee_id = data['Employee_ID']
+        password = data['Password']  # Add password field
         # Insert data into database
         cur.execute(
-            "INSERT INTO Customers (Name, DOB, Address, PhoneNumber, Email, Employee_ID, Password) VALUES (%s, %s, %s, %s, %s, %s, %s)",
-            (name, dob, address, phone_number, email, employee_id, password)
+            "INSERT INTO Customers (Customer_ID, Name, DOB, Address, PhoneNumber, Email, Employee_ID, Password) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
+            (customer_id, name, dob, address, phone_number, email, employee_id, password)
         )
         mysql.connection.commit()
         cur.close()
