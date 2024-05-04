@@ -12,18 +12,17 @@ import {
   MDBIcon
 } from 'mdb-react-ui-kit';
 
-export default function Login() {
+export default function Login({ loginStatus, user, setLoginStatus, setUser }) {
   // Define state variables for username, password, and user type
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isEmployee, setIsEmployee] = useState(false);
   const [isCustomer, setIsCustomer] = useState(false);
-  const [loggedIn, setLoggedIn] = useState(false); // New state variable for login status
   const [showSignup, setShowSignup] = useState(false); // State variable to toggle signup page
-  const [employees, setEmployees] = useState([])
-  const [customers, setCustomers] = useState([])
-  const [customerName, setCustomerName] = useState(null)
-  const [employeeName, setEmployeeName] = useState(null)
+  const [employees, setEmployees] = useState([]);
+  const [customers, setCustomers] = useState([]);
+  const [customerName, setCustomerName] = useState(null);
+  const [employeeName, setEmployeeName] = useState(null);
 
   useEffect(() => {
     fetch('http://127.0.0.1:5000/employee')
@@ -79,11 +78,14 @@ export default function Login() {
       console.log('Login successful');
       if (isEmployee) {
         setEmployeeName(username);
+        setUser(username); // Update current user in Navbar component
+        setLoginStatus(true); // Update login status in Navbar component
         console.log(`Welcome ${username}`);
       } else {
         setCustomerName(username);
+        setUser(username); // Update current user in Navbar component
+        setLoginStatus(true); // Update login status in Navbar component
       }
-      setLoggedIn(true); // Update the state to reflect the user's login status
     } else {
       // Login failed
       console.error('Login failed');
@@ -92,9 +94,8 @@ export default function Login() {
   };
 
   // Render login form if not logged in
-  if (!loggedIn && !showSignup) {
+  if (!loginStatus && !showSignup) {
     return (
-      
       <div className="container">
         <div className="center">
           <h1>Login</h1>
@@ -114,16 +115,15 @@ export default function Login() {
               <p> <input type="checkbox" className="employee check-box" checked={isEmployee} onChange={handleEmployeeCheckboxChange} />Employee</p>
               <p> <input type="checkbox" className="customer check-box" checked={isCustomer} onChange={handleCustomerCheckboxChange} />Customer</p>
             </div>
-
             <input type="submit" value="Login" />
             <div className="signup_link">
-            Not a Member ? <a href="#" onClick={handleSignupLinkClick}>Signup</a>
+              Not a Member ? <a href="#" onClick={handleSignupLinkClick}>Signup</a>
             </div>
           </form>
         </div>
       </div>
     );
-  } else if (!loggedIn && showSignup) {
+  } else if (!loginStatus && showSignup) {
     return <Signup />;
   } else {
     // Render null if logged in
