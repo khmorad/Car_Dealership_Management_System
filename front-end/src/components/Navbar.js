@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "../stylings/Navbar.css";
 import googleImage from "../assets/google.png";
 import Login from "./Login";
-
+import Logo from "../assets/projicon.png"
 export default function Navbar() {
   const [showLogin, setShowLogin] = useState(false);
   const [loginStatus, setLoginStatus] = useState(false); // Initialize login status as false
@@ -20,7 +20,7 @@ export default function Navbar() {
 
   return (
     <nav className="navbar">
-      <h1 className="logo">Logo</h1>
+      <h1 className="logo"><img src={Logo} style={{height: "44px", width:"44px", }}/></h1>
       <ul className="nav-menu">
         <li className="nav-item">
           <a className="bruh" href="#home">

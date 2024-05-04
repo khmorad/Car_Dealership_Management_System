@@ -1,5 +1,4 @@
 import logo from "./logo.svg";
-import "./App.css";
 import Navbar from "./components/Navbar";
 import Ladysuzan from "./components/Ladysuzan";
 import Infowindow from "./components/Infowindow";
