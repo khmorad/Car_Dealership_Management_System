@@ -14,27 +14,28 @@ import Login from './Login';
 import { v4 as uuidv4 } from 'uuid';
 
 export default function Signup() {
-  // Define state variables for username, password, and user type
+  // Define state variables for username, password, email, and user type
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
+  const [address, setAddress] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [isEmployee, setIsEmployee] = useState(false);
   const [isCustomer, setIsCustomer] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false); // New state variable for login status
   const [showSignup, setShowSignup] = useState(false); // State variable to toggle signup page
   const [dob, setDob] = useState('');
 
-  const [employees, setEmployees] = useState([])
-  const [customers, setCustomers] = useState([])
-  const [customerName, setCustomerName] = useState(null)
-  const [employeeName, setEmployeeName] = useState(null)
+  const [employees, setEmployees] = useState([]);
+  const [customers, setCustomers] = useState([]);
+  const [customerName, setCustomerName] = useState(null);
+  const [employeeName, setEmployeeName] = useState(null);
   
   useEffect(() => {
     fetch('http://127.0.0.1:5000/employee') 
       .then(response => response.json())
       .then(data => {
         setEmployees(data);
-        console.log('Employees:', data);
       })
       .catch(error => console.error('Error fetching employees:', error));
   }, []);
@@ -44,7 +45,6 @@ export default function Signup() {
       .then(response => response.json())
       .then(data => {
         setCustomers(data);
-        console.log('Customers:', data);
       })
       .catch(error => console.error('Error fetching customers:', error));
   }, []);
@@ -59,6 +59,14 @@ export default function Signup() {
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
+  };
+
+  const handleAddressChange = (e) => {
+    setAddress(e.target.value);
+  };
+
+  const handlePhoneNumberChange = (e) => {
+    setPhoneNumber(e.target.value);
   };
 
   const handleEmployeeCheckboxChange = () => {
@@ -81,18 +89,18 @@ export default function Signup() {
   const handleSubmit = (e) => {
     e.preventDefault();
     const customerId = Math.floor(Math.random() * 1000) + 1;
-
-    const dobWithTime = dob + " 00:00:00 GMT";
+  
     // Format date of birth
-    const formattedDOB = new Date(dobWithTime).toISOString().slice(0, 10);
+    const formattedDOB = new Date(`${dob} 00:00:00 GMT`).toUTCString();
+
     
     // Prepare data for registration
     const formData = {
       Customer_ID: customerId,
       Name: username,
       DOB: formattedDOB,
-      Address: "", 
-      PhoneNumber: "", 
+      Address: address,
+      PhoneNumber: phoneNumber,
       Email: email,
       Employee_ID: 1,
       Password: password
@@ -124,6 +132,8 @@ export default function Signup() {
   };
   
   
+  
+  
 
   // Render login form if not logged in
   if (!loggedIn && !showSignup) {
@@ -146,6 +156,16 @@ export default function Signup() {
               <input type="email" name="email" value={email} onChange={handleEmailChange} required />
               <span></span>
               <label>Email</label>
+            </div>
+            <div className="txt_field">
+              <input type="text" name="address" value={address} onChange={handleAddressChange} required />
+              <span></span>
+              <label>Address</label>
+            </div>
+            <div className="txt_field">
+              <input type="text" name="phoneNumber" value={phoneNumber} onChange={handlePhoneNumberChange} required />
+              <span></span>
+              <label>Phone Number</label>
             </div>
             <div className="txt_field">
               <input type="date" name="dob" value={dob} onChange={handleDobChange} required />

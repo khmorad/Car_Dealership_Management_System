@@ -1,17 +1,21 @@
 
-  
 .center {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 400px;
-    height: 500px;
-    background: white;
-    border-radius: 10px;
-    z-index: 900;
-    box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
-  }
+  position: fixed;
+  top: 50%;
+  max-height: 1000000px; /* Increase the maximum height */
+
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 400px;
+  max-height: 500px; /* Set a maximum height */
+  background: white;
+  border-radius: 10px;
+  z-index: 900;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+  overflow-y: auto; /* Add vertical scrollbar */
+  padding-right: 10px; /* Add space for scrollbar to prevent content from shifting */
+}
+
   .checkboxes{
     margin-bottom: 10px;
     color: #807e7e;
@@ -130,3 +134,5 @@
     backdrop-filter: blur(8px);
     background-color: rgba(255, 255, 255, 0.5); /* Adjust the opacity as needed */
   }
+
+  
