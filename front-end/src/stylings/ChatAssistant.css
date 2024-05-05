@@ -20,7 +20,7 @@
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    background: #a1f7ff;
+    background: #06e2f1;
     transition: all 0.2s ease;
     z-index: 1000;
 }
@@ -47,7 +47,7 @@ body.show-chatbot .chatbot-toggler span:last-child {
     position: fixed;
     right: 35px;
     bottom: 90px;
-    width: 330px;
+    width: 350px;
     height: 63%;
     background: #fff;
     border-radius: 15px;

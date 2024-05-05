@@ -4,7 +4,6 @@ from datetime import datetime
 from flask_cors import CORS
 import os
 from dotenv import load_dotenv
-
 load_dotenv()
 app = Flask(__name__)
 CORS(app)
@@ -21,6 +20,7 @@ mysql = MySQL(app)
 CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}})
 
 # ************************Rio Taiga(Employee, Customer table)***********************************
+# Create Employee
 @app.route('/employee', methods=['POST'])
 def create_employee():
     try:
@@ -32,10 +32,11 @@ def create_employee():
         department = data['department']
         job_title = data['job_title']
         report_to = data.get('report_to', None)
+        password = data['password']  # Add password field
         # Insert data into database
         cur.execute(
-            "INSERT INTO Employees (Name, DOB, Department, jobTitle, reportTo) VALUES (%s, %s, %s, %s, %s)",
-            (name, dob, department, job_title, report_to)
+            "INSERT INTO Employees (Name, DOB, Department, jobTitle, reportTo, Password) VALUES (%s, %s, %s, %s, %s, %s)",
+            (name, dob, department, job_title, report_to, password)
         )
         mysql.connection.commit()
         cur.close()
@@ -43,20 +44,18 @@ def create_employee():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
-
 # Read all Employees
 @app.route('/employee', methods=['GET'])
 def get_employees():
     try:
         cur = mysql.connection.cursor()
-        # Query database for employees
+        # Query database for employees (excluding password field)
         cur.execute("SELECT * FROM Employees")
         employees = cur.fetchall()
         cur.close()
         return jsonify(employees), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 400
-
 
 # Update Employee
 @app.route('/employee/<int:employee_id>', methods=['PUT'])
@@ -70,17 +69,17 @@ def update_employee(employee_id):
         department = data['department']
         job_title = data['job_title']
         report_to = data.get('report_to', None)
+        password = data['password']  # Add password field
         # Update employee in database
         cur.execute(
-            "UPDATE Employees SET Name = %s, DOB = %s, Department = %s, jobTitle = %s, reportTo = %s WHERE Employee_ID = %s",
-            (name, dob, department, job_title, report_to, employee_id)
+            "UPDATE Employees SET Name = %s, DOB = %s, Department = %s, jobTitle = %s, reportTo = %s, Password = %s WHERE Employee_ID = %s",
+            (name, dob, department, job_title, report_to, password, employee_id)
         )
         mysql.connection.commit()
         cur.close()
         return jsonify({"message": "Employee updated successfully"}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 400
-
 
 # Delete Employee
 @app.route('/employee/<int:employee_id>', methods=['DELETE'])
@@ -95,25 +94,26 @@ def delete_employee(employee_id):
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
-    # Create Customer
-
-
+# Create Customer
 @app.route('/customer', methods=['POST'])
 def create_customer():
     try:
         cur = mysql.connection.cursor()
         # Extract data from request
         data = request.json
-        name = data['name']
-        dob = data['dob']
-        address = data['address']
-        phone_number = data['phone_number']
-        email = data['email']
-        employee_id = data['employee_id']
+        customer_id = data['Customer_ID']
+        name = data['Name']
+        dob_str = data['DOB']
+        dob = datetime.strptime(dob_str, '%a, %d %b %Y %H:%M:%S %Z').strftime('%Y-%m-%d')
+        address = data['Address']
+        phone_number = data['PhoneNumber']
+        email = data['Email']
+        employee_id = data['Employee_ID']
+        password = data['Password']  # Add password field
         # Insert data into database
         cur.execute(
-            "INSERT INTO Customers (Name, DOB, Address, PhoneNumber, Email, Employee_ID) VALUES (%s, %s, %s, %s, %s, %s)",
-            (name, dob, address, phone_number, email, employee_id)
+            "INSERT INTO Customers (Customer_ID, Name, DOB, Address, PhoneNumber, Email, Employee_ID, Password) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
+            (customer_id, name, dob, address, phone_number, email, employee_id, password)
         )
         mysql.connection.commit()
         cur.close()
@@ -121,13 +121,12 @@ def create_customer():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
-
 # Read all Customers
 @app.route('/customer', methods=['GET'])
 def get_customers():
     try:
         cur = mysql.connection.cursor()
-        # Query database for customers
+        # Query database for customers (excluding password field)
         cur.execute("SELECT * FROM Customers")
         customers = cur.fetchall()
         cur.close()
@@ -135,42 +134,6 @@ def get_customers():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
-# Update Customer
-@app.route('/customer/<int:customer_id>', methods=['PUT'])
-def update_customer(customer_id):
-    try:
-        cur = mysql.connection.cursor()
-        # Extract data from request
-        data = request.json
-        name = data['name']
-        dob = data['dob']
-        address = data['address']
-        phone_number = data['phone_number']
-        email = data['email']
-        employee_id = data['employee_id']
-        # Update customer in database
-        cur.execute(
-            "UPDATE Customers SET Name = %s, DOB = %s, Address = %s, PhoneNumber = %s, Email = %s, EmployeeID = %s WHERE CustomerID = %s",
-            (name, dob, address, phone_number, email, employee_id, customer_id)
-        )
-        mysql.connection.commit()
-        cur.close()
-        return jsonify({"message": "Customer updated successfully"}), 200
-    except Exception as e:
-        return jsonify({"error": str(e)}), 400
-
-# Delete Customer
-@app.route('/customer/<int:customer_id>', methods=['DELETE'])
-def delete_customer(customer_id):
-    try:
-        cur = mysql.connection.cursor()
-        # Delete customer from database
-        cur.execute("DELETE FROM Customers WHERE CustomerID = %s", (customer_id,))
-        mysql.connection.commit()
-        cur.close()
-        return jsonify({"message": "Customer deleted successfully"}), 200
-    except Exception as e:
-        return jsonify({"error": str(e)}), 400
 # *****************************************************************************
 
 # ************************Eddie (Car, Car_part table)**************************
