@@ -1,4 +1,4 @@
-import { Button, Form, Input, Space, Table, Typography } from "antd";
+import { Button, Form, Input, Space, Table, Typography , message} from "antd";
 import { useEffect, useState } from "react";
 
 function Inventory() {
@@ -47,7 +47,26 @@ function Inventory() {
       }
     });
   };
-
+ const deleteCar = async (record) => {
+    try {
+      const response = await fetch(`http://127.0.0.1:5000/remove/cars/${record.VIN}`, {
+        method: 'DELETE', 
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ action: 'delete' }),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to delete car on the server.');
+      }
+      // Remove the deleted car from the local state
+      setCars(cars.filter(item => item.VIN !== record.VIN));
+      message.success('Car deleted successfully.');
+    } catch (error) {
+      console.error('Error deleting car on the server:', error);
+      message.error('Failed to delete car.');
+    }
+  };
   const columns = [
     {
       title: 'VIN',
@@ -113,7 +132,7 @@ function Inventory() {
         ) : (
           <Space size="middle">
             <Button type="primary" disabled={editingKey !== ''} onClick={() => edit(record)}>Edit</Button>
-            <Button type="danger">Delete</Button>
+            <Button type="danger" onClick={() => deleteCar(record)}>Delete</Button>
           </Space>
         );
       },
