@@ -284,13 +284,14 @@ def delete_car(VIN):
 
 ################ Car part #################
 # GET method for all parts (a single part if using part_id)
-@app.route('/browse/parts/<int:part_id>', methods=['GET'])
+@app.route('/browse/parts/<part_id>', methods=['GET'])
 def get_part(part_id):
     cursor = mysql.connection.cursor()
     try:
         if part_id == "all":
             cursor.execute("SELECT * FROM Car_part")
-            return jsonify(cursor.fetchall()), 200
+            parts = cursor.fetchall()
+            return jsonify(parts), 200
         else:
             cursor.execute("SELECT * FROM Car_part WHERE Part_ID=%s", (part_id,))
             data = cursor.fetchone()
