@@ -4,7 +4,7 @@ import {
   ShoppingOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { Card, Space, Statistic, Table, Typography } from "antd";
+import { Card, Space, Statistic, Table, Typography,Button,Modal, Form, Input, message  } from "antd";
 import { useEffect, useState } from "react";
 
 import {
@@ -162,7 +162,7 @@ function Dashboard() {
 
 function DashboardCard({ title, value, icon }) {
   return (
-    <Card style={{height: "100px", width: "200px", display: "flex", alignItems: "center"}}>
+    <Card style={{height: "100px", width: "250px", display: "flex", alignItems: "center"}}>
       <Space direction="horizontal">
         {icon}
         <Statistic title={title} value={value} />
@@ -175,9 +175,12 @@ function DashboardCard({ title, value, icon }) {
 
 function RecentOrders() {
   const [carPart, setCarPart] = useState([]);
+  const [editingKey, setEditingKey] = useState('');
+  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+  const [deleteRecord, setDeleteRecord] = useState(null);
+  const [addModalVisible, setAddModalVisible] = useState(false);
 
   useEffect(() => {
-    // Assuming you have a function to fetch car part data from an API endpoint
     const fetchCarParts = async () => {
       try {
         const response = await fetch('http://127.0.0.1:5000/browse/parts/all');
@@ -186,50 +189,197 @@ function RecentOrders() {
         }
         const data = await response.json();
         setCarPart(data);
+        console.log("car part: ", carPart)
       } catch (error) {
         console.error('Error fetching car parts:', error);
       }
     };
 
-    // Call the fetchCarParts function when the component mounts
     fetchCarParts();
-  }, []); // Empty dependency array to ensure the effect runs only once
-  const paginationConfig = {
-    pageSize: 4, // Number of rows per page
-    total: carPart.length, // Total number of data items (optional, if known)
+  }, []);
+
+  const handleEdit = (record) => {
+    setEditingKey(record.Part_ID);
   };
+
+  const handleSave = async (record) => {
+    try {
+      const updatedCarPart = { ...record }; // Assuming the edited record is passed directly
+      // Send request to update the car part on the server
+      await fetch(`http://127.0.0.1:5000/browse/parts/${record.Part_ID}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedCarPart),
+      });
+      message.success('Car part updated successfully.');
+      setEditingKey('');
+    } catch (error) {
+      console.error('Error updating car part:', error);
+      message.error('Failed to update car part.');
+    }
+  };
+
+  const handleDelete = async (record) => {
+    try {
+      await fetch(`http://127.0.0.1:5000/remove/parts/${record.Part_ID}`, {
+        method: 'DELETE',
+      });
+      setCarPart(carPart.filter(item => item.Part_ID !== record.Part_ID));
+      message.success('Car part deleted successfully.');
+    } catch (error) {
+      console.error('Error deleting car part:', error);
+      message.error('Failed to delete car part.');
+    }
+  };
+
+  const handleDeleteConfirm = (record) => {
+    setDeleteRecord(record);
+    setDeleteModalVisible(true);
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteModalVisible(false);
+  };
+
+  const handleAdd = () => {
+    setAddModalVisible(true);
+  };
+
+  const handleAddCancel = () => {
+    setAddModalVisible(false);
+  };
+
+  const  handleAddSubmit = async (values) => {
+    try {
+      // Generate a random 3-digit number for Part_ID
+      const randomPartID = Math.floor(Math.random() * 900) + 100;
+  
+      // Combine the random Part_ID with the submitted values
+      const carPartData = {
+        Part_ID: randomPartID,
+        ...values
+      };
+  
+      const response = await fetch('http://127.0.0.1:5000/add/parts', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(carPartData),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to add car part');
+      }
+      message.success('Car part added successfully.');
+      setAddModalVisible(false);
+      // Refresh the list of car parts
+      const updatedCarParts = await response.json();
+      setCarPart(updatedCarParts);
+    } catch (error) {
+      console.error('Error adding car part:', error);
+      message.error('Failed to add car part.');
+    }
+  };
+  ;
+
+  const columns = [
+    {
+      title: "Part ID",
+      dataIndex: "Part_ID",
+    },
+    {
+      title: "Name",
+      dataIndex: "Name",
+    },
+    {
+      title: "Brand",
+      dataIndex: "Brand",
+    },
+    {
+      title: "Fitment",
+      dataIndex: "Fitment",
+    },
+    {
+      title: "Price",
+      dataIndex: "Price",
+    },
+    {
+      title: 'Actions',
+      key: 'actions',
+      render: (text, record) => (
+        <>
+          <Button type="primary" onClick={() => handleEdit(record)}>Edit</Button>
+          <Button type="danger" onClick={() => handleDeleteConfirm(record)}>Delete</Button>
+        </>
+      ),
+    },
+  ];
+
   return (
     <>
       <Typography.Text>Recent Orders</Typography.Text>
+      <Button type="primary" onClick={handleAdd} style={{ marginBottom: '16px' }}>Add Car Part</Button>
       <Table
-        columns={[
-          {
-            title: "Part ID",
-            dataIndex: "Part_ID",
-          },
-          {
-            title: "Name",
-            dataIndex: "Name",
-          },
-          {
-            title: "Brand",
-            dataIndex: "Brand",
-          },
-          {
-            title: "Fitment",
-            dataIndex: "Fitment",
-          },
-          {
-            title: "Price",
-            dataIndex: "Price",
-          },
-        ]}
+        columns={columns}
         dataSource={carPart}
-        pagination={paginationConfig}
+        pagination={{ pageSize: 4 }}
       />
+      <Modal
+        title="Confirm Delete"
+        visible={deleteModalVisible}
+        onOk={() => {
+          handleDelete(deleteRecord);
+          setDeleteModalVisible(false);
+        }}
+        onCancel={handleDeleteCancel}
+      >
+        <p>Are you sure you want to delete this car part?</p>
+      </Modal>
+      <Modal
+        title="Add Car Part"
+        visible={addModalVisible}
+        onCancel={handleAddCancel}
+        footer={null}
+      >
+        <AddCarPartForm onSubmit={handleAddSubmit} />
+      </Modal>
     </>
   );
 }
+
+function AddCarPartForm({ onSubmit }) {
+  const [form] = Form.useForm();
+
+  const onFinish = (values) => {
+    onSubmit(values);
+    form.resetFields();
+  };
+
+  return (
+    <Form form={form} onFinish={onFinish} layout="vertical">
+
+      <Form.Item name="Name" label="Name" rules={[{ required: true, message: 'Please input the name of the car part!' }]}>
+        <Input />
+      </Form.Item>
+      <Form.Item name="Brand" label="Brand" rules={[{ required: true, message: 'Please input the brand of the car part!' }]}>
+        <Input />
+      </Form.Item>
+      <Form.Item name="Fitment" label="Fitment" rules={[{ required: true, message: 'Please input the fitment of the car part!' }]}>
+        <Input />
+      </Form.Item>
+      <Form.Item name="Price" label="Price" rules={[{ required: true, message: 'Please input the price of the car part!' }]}>
+        <Input type="number" min={0} />
+      </Form.Item>
+      <Form.Item>
+        <Button type="primary" htmlType="submit">Add Car Part</Button>
+      </Form.Item>
+    </Form>
+  );
+}
+
+
 
 
 function DashboardChart({ transactions }) {
