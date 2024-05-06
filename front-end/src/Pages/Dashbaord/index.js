@@ -181,6 +181,7 @@ function RecentOrders() {
   const [addModalVisible, setAddModalVisible] = useState(false);
 
   useEffect(() => {
+    // Fetch car parts data and update carPart state
     const fetchCarParts = async () => {
       try {
         const response = await fetch('http://127.0.0.1:5000/browse/parts/all');
@@ -189,14 +190,15 @@ function RecentOrders() {
         }
         const data = await response.json();
         setCarPart(data);
-        console.log("car part: ", carPart)
+        console.log("car part: ", data); // Log the fetched data, not the state variable
       } catch (error) {
         console.error('Error fetching car parts:', error);
       }
     };
-
+  
     fetchCarParts();
-  }, []);
+  }, [setCarPart]); // Add setCarPart as a dependency
+  
 
   const handleEdit = (record) => {
     setEditingKey(record.Part_ID);
@@ -251,7 +253,21 @@ function RecentOrders() {
     setAddModalVisible(false);
   };
 
-  const  handleAddSubmit = async (values) => {
+  const handleAddSubmit = async (values) => {
+
+    const fetchCarParts = async () => {
+      try {
+        const response = await fetch('http://127.0.0.1:5000/browse/parts/all');
+        if (!response.ok) {
+          throw new Error('Failed to fetch car parts');
+        }
+        const data = await response.json();
+        setCarPart(data);
+        console.log("car part: ", data);
+      } catch (error) {
+        console.error('Error fetching car parts:', error);
+      }
+    };
     try {
       // Generate a random 3-digit number for Part_ID
       const randomPartID = Math.floor(Math.random() * 900) + 100;
@@ -269,20 +285,27 @@ function RecentOrders() {
         },
         body: JSON.stringify(carPartData),
       });
+  
       if (!response.ok) {
         throw new Error('Failed to add car part');
       }
+  
+      // If the response is successful, show a success message
       message.success('Car part added successfully.');
+  
+      // Hide the add car part modal
       setAddModalVisible(false);
-      // Refresh the list of car parts
-      const updatedCarParts = await response.json();
-      setCarPart(updatedCarParts);
+  
+      // Fetch and update the list of car parts to reflect the addition
+      fetchCarParts();
     } catch (error) {
       console.error('Error adding car part:', error);
+      // If there's an error, show an error message
       message.error('Failed to add car part.');
     }
   };
-  ;
+  
+  
 
   const columns = [
     {
