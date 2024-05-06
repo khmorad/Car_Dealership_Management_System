@@ -5,25 +5,30 @@ import Cardash from "./Cardash";
 import Home from "./Home";
 
 function App() {
-  const [status, setStatus] = useState(false);
-  const [isEmployee, setIsEmployee] = useState(false);
 
+  const [showLogin, setShowLogin] = useState(false);
+  const [loginStatus, setLoginStatus] = useState(false);
+  const [user, setUser] = useState(null);
+  const [isEmployee, setIsEmployee] = useState(false)
+  //{status && isEmployee ? <Cardash /> : <Home />}
   // Function to update login status and user type
-  const handleLoginStatusChange = (status, employee) => {
-    setStatus(status);
-    setIsEmployee(employee);
-  };
+
 
   return (
     <div className="App">
       <Navbar
-        status={status}
-        setStatus={setStatus}
+        showLogin={showLogin}
+        setShowLogin={setShowLogin}
+        loginStatus={loginStatus}
+        setLoginStatus={setLoginStatus}
+        user={user}
+        setUser={setUser}
         isEmployee={isEmployee}
         setIsEmployee={setIsEmployee}
       />
       <ChatAssistant />
-      {status && isEmployee ? <Cardash /> : <Cardash />}
+      {loginStatus && isEmployee ? <Cardash /> : <Home />}
+
     </div>
   );
 }

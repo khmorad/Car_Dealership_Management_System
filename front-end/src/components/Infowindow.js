@@ -62,7 +62,7 @@ export default function Infowindow() {
               {selectedCar.Gas_Type}
             </li>
           </ul>
-          <button onClick={() => setSelectedCar(null)}>Close</button>
+          <button onClick={() => setSelectedCar(null)} className="button-86">Close</button>
         </div>
       </div>
     );

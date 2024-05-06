@@ -12,11 +12,11 @@ import {
   MDBIcon
 } from 'mdb-react-ui-kit';
 
-export default function Login({ loginStatus, user, setLoginStatus, setUser }) {
+export default function Login({ loginStatus, user, setLoginStatus, setUser, isEmployee,
+  setIsEmployee}) {
   // Define state variables for username, password, and user type
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [isEmployee, setIsEmployee] = useState(false);
   const [isCustomer, setIsCustomer] = useState(false);
   const [showSignup, setShowSignup] = useState(false); // State variable to toggle signup page
   const [employees, setEmployees] = useState([]);

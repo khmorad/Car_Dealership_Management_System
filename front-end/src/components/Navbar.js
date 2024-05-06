@@ -5,14 +5,16 @@ import Login from "./Login";
 import Logo from "../assets/projicon.png";
 
 export default function Navbar({
-  status,
-  setStatus,
+  showLogin,
+  setShowLogin,
+  loginStatus,
+  setLoginStatus,
+  user,
+  setUser,
   isEmployee,
   setIsEmployee
 }) {
-  const [showLogin, setShowLogin] = useState(false);
-  const [loginStatus, setLoginStatus] = useState(false);
-  const [user, setUser] = useState(null);
+
 
   const handleGoogleAuthClick = () => {
     setShowLogin(true);
@@ -58,6 +60,8 @@ export default function Navbar({
           user={user}
           setLoginStatus={setLoginStatus}
           setUser={setUser}
+          isEmployee={isEmployee}
+          setIsEmployee={setIsEmployee}
         />
       ) : (
         <button className="button-55" onClick={handleGoogleAuthClick}>
