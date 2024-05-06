@@ -1,20 +1,29 @@
-import logo from "./logo.svg";
+import React, { useState } from "react";
 import Navbar from "./components/Navbar";
-import Ladysuzan from "./components/Ladysuzan";
-import Infowindow from "./components/Infowindow";
 import ChatAssistant from "./components/ChatAssistant";
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import Home from "./Home";
-import Login from "./components/Login";
 import Cardash from "./Cardash";
+import Home from "./Home";
 
 function App() {
+  const [status, setStatus] = useState(false);
+  const [isEmployee, setIsEmployee] = useState(false);
+
+  // Function to update login status and user type
+  const handleLoginStatusChange = (status, employee) => {
+    setStatus(status);
+    setIsEmployee(employee);
+  };
+
   return (
     <div className="App">
-      <Navbar />
-      <ChatAssistant/>
-      <Cardash/>
-  
+      <Navbar
+        status={status}
+        setStatus={setStatus}
+        isEmployee={isEmployee}
+        setIsEmployee={setIsEmployee}
+      />
+      <ChatAssistant />
+      {status && isEmployee ? <Cardash /> : <Home />}
     </div>
   );
 }
