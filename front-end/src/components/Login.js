@@ -80,6 +80,7 @@ export default function Login({ loginStatus, user, setLoginStatus, setUser }) {
         setEmployeeName(username);
         setUser(username); // Update current user in Navbar component
         setLoginStatus(true); // Update login status in Navbar component
+        setIsEmployee(true); // Update isEmployee state in the App component
         console.log(`Welcome ${username}`);
       } else {
         setCustomerName(username);
@@ -92,7 +93,6 @@ export default function Login({ loginStatus, user, setLoginStatus, setUser }) {
       // You can display an error message to the user if needed
     }
   };
-
   // Render login form if not logged in
   if (!loginStatus && !showSignup) {
     return (
