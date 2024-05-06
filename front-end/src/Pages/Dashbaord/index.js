@@ -34,6 +34,7 @@ function Dashboard() {
   const [Employees,setEmployees] = useState([])
   const [customers, setCustomers] = useState([])
   const [cars, setCars] = useState([])
+  const [carPart, setCarpart] = useState([])
   const [transaction, setTransaction] = useState([])
   useEffect(() => {
     fetch('http://127.0.0.1:5000/employee') 
@@ -71,6 +72,14 @@ function Dashboard() {
         setCars(data);
       })
       .catch(error => console.error('Error fetching cars:', error));
+  }, []);
+  useEffect(() => {
+    fetch('http://127.0.0.1:5000/browse/parts/all') 
+      .then(response => response.json())
+      .then(data => {
+        setCarpart(data);
+      })
+      .catch(error => console.error('Error fetching car parts:', error));
   }, []);
   const ObjCounter = (data) => {
     if (!data) return 0;
