@@ -251,6 +251,7 @@ export default function Infowindow() {
                   <span className="detailLabel">Price:</span> {`$${car.Price}`}
                 </li>
               </ul>
+              <button className="circular-button">Buy</button>
             </div>
           </div>
         ))}
