@@ -23,7 +23,7 @@ function App() {
         setIsEmployee={setIsEmployee}
       />
       <ChatAssistant />
-      {status && isEmployee ? <Cardash /> : <Home />}
+      {status && isEmployee ? <Cardash /> : <Cardash />}
     </div>
   );
 }

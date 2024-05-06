@@ -34,7 +34,6 @@ function Dashboard() {
   const [Employees,setEmployees] = useState([])
   const [customers, setCustomers] = useState([])
   const [cars, setCars] = useState([])
-  const [carPart, setCarpart] = useState([])
   const [transaction, setTransaction] = useState([])
   useEffect(() => {
     fetch('http://127.0.0.1:5000/employee') 
@@ -73,14 +72,7 @@ function Dashboard() {
       })
       .catch(error => console.error('Error fetching cars:', error));
   }, []);
-  useEffect(() => {
-    fetch('http://127.0.0.1:5000/browse/parts/all') 
-      .then(response => response.json())
-      .then(data => {
-        setCarpart(data);
-      })
-      .catch(error => console.error('Error fetching car parts:', error));
-  }, []);
+
   const ObjCounter = (data) => {
     if (!data) return 0;
 
@@ -178,37 +170,68 @@ function DashboardCard({ title, value, icon }) {
     </Card>
   );
 }
+
+
+
 function RecentOrders() {
-  const [dataSource, setDataSource] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [carPart, setCarPart] = useState([]);
 
+  useEffect(() => {
+    // Assuming you have a function to fetch car part data from an API endpoint
+    const fetchCarParts = async () => {
+      try {
+        const response = await fetch('http://127.0.0.1:5000/browse/parts/all');
+        if (!response.ok) {
+          throw new Error('Failed to fetch car parts');
+        }
+        const data = await response.json();
+        setCarPart(data);
+      } catch (error) {
+        console.error('Error fetching car parts:', error);
+      }
+    };
 
-
+    // Call the fetchCarParts function when the component mounts
+    fetchCarParts();
+  }, []); // Empty dependency array to ensure the effect runs only once
+  const paginationConfig = {
+    pageSize: 4, // Number of rows per page
+    total: carPart.length, // Total number of data items (optional, if known)
+  };
   return (
     <>
       <Typography.Text>Recent Orders</Typography.Text>
       <Table
         columns={[
           {
-            title: "Title",
-            dataIndex: "title",
+            title: "Part ID",
+            dataIndex: "Part_ID",
           },
           {
-            title: "Quantity",
-            dataIndex: "quantity",
+            title: "Name",
+            dataIndex: "Name",
+          },
+          {
+            title: "Brand",
+            dataIndex: "Brand",
+          },
+          {
+            title: "Fitment",
+            dataIndex: "Fitment",
           },
           {
             title: "Price",
-            dataIndex: "discountedPrice",
+            dataIndex: "Price",
           },
         ]}
-        loading={loading}
-        dataSource={dataSource}
-        pagination={false}
-      ></Table>
+        dataSource={carPart}
+        pagination={paginationConfig}
+      />
     </>
   );
 }
+
+
 function DashboardChart({ transactions }) {
   const [revenueData, setRevenueData] = useState({
     labels: [],
