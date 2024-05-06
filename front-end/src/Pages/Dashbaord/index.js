@@ -73,6 +73,14 @@ function Dashboard() {
       })
       .catch(error => console.error('Error fetching cars:', error));
   }, []);
+  useEffect(() => {
+    fetch('http://127.0.0.1:5000/browse/parts/all') 
+      .then(response => response.json())
+      .then(data => {
+        setCarpart(data);
+      })
+      .catch(error => console.error('Error fetching car parts:', error));
+  }, []);
   const ObjCounter = (data) => {
     if (!data) return 0;
 
@@ -159,14 +167,7 @@ function Dashboard() {
     </Space>
   );
 }
-useEffect(() => {
-  fetch('http://127.0.0.1:5000/cars/all') 
-    .then(response => response.json())
-    .then(data => {
-      setCars(data);
-    })
-    .catch(error => console.error('Error fetching cars:', error));
-}, []);
+
 function DashboardCard({ title, value, icon }) {
   return (
     <Card style={{height: "100px", width: "200px", display: "flex", alignItems: "center"}}>
