@@ -439,7 +439,7 @@ function DashboardChart({ transactions }) {
         labels: labels,
         datasets: [{
           label: 'Revenue',
-          backgroundColor: 'rgba(54, 162, 235, 0.6)',
+          backgroundColor: 'rgba(216,131,127,0.7)',
           borderColor: 'rgba(54, 162, 235, 1)',
           borderWidth: 1,
           hoverBackgroundColor: 'rgba(54, 162, 235, 0.8)',
