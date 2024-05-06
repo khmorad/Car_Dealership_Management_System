@@ -6,12 +6,14 @@ import ChatAssistant from "./components/ChatAssistant";
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Home from "./Home";
 import Login from "./components/Login";
+import Cardash from "./Cardash";
 
 function App() {
   return (
     <div className="App">
+      <Navbar />
       <ChatAssistant/>
-      <Home/>
+      <Cardash/>
   
     </div>
   );

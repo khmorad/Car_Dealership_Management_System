@@ -7,7 +7,6 @@ import Infowindow from "./components/Infowindow";
 function Home() {
   return (
     <div className="App">
-      <Navbar />
       <Ladysuzan />
       <Infowindow />
     </div>
