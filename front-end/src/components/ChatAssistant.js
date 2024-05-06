@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import'../stylings/ChatAssistant.css'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -15,10 +15,19 @@ export default function ChatAssistant() {
     const [chatMessages, setChatMessages] = useState([
       { role: "incoming", content: "Hi there 👋\nHow can I help you today?" },
     ]); // State to store chat messages
+    const [canInfo, setCarInfo] = useState([])
     const [isTyping, setIsTyping] = useState(false);
   
     const inputInitHeight = 40; // Initial height of the input textarea
   
+    useEffect(() => {
+      fetch("http://127.0.0.1:5000/cars/all")
+        .then((response) => response.json())
+        .then((data) => {
+          setCarInfo(data);
+        })
+        .catch((error) => console.error("Error fetching cars:", error));
+    }, []);
     const handleInputChange = (e) => {
       setUserMessage(e.target.value); // Update user's message as they type
     };
@@ -39,7 +48,7 @@ export default function ChatAssistant() {
       const promptMessage = {
         role: "system",
         content:
-          "This is a chat for assisting Car dealership where It would answer anything car related",
+          `This is a chat for assisting Car dealership where It would answer anything car related answer based on car inventory car invertory: ${canInfo}`,
       };
       const apiRequestBody = {
         model: "gpt-3.5-turbo",
