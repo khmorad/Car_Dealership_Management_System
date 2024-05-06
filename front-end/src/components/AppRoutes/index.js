@@ -12,7 +12,7 @@ function AppRoutes() {
       <Route path="/inventory" element={<Inventory />}></Route>
       <Route path="/orders" element={<Orders />}></Route>
       <Route path="/customers" element={<Customers />}></Route>
-      <Route path="/employees" element={<Customers />}></Route>
+      <Route path="/employees" element={<Employees />}></Route>
       <Route path="/home" element={<Home />}></Route>
     </Routes>
   );

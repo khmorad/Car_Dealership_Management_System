@@ -34,6 +34,7 @@ function Dashboard() {
   const [Employees,setEmployees] = useState([])
   const [customers, setCustomers] = useState([])
   const [cars, setCars] = useState([])
+  const [carPart, setCarpart] = useState([])
   const [transaction, setTransaction] = useState([])
   useEffect(() => {
     fetch('http://127.0.0.1:5000/employee') 
