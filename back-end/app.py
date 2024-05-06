@@ -134,6 +134,44 @@ def get_customers():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
+# Update Customer
+@app.route('/customer/<int:customer_id>', methods=['PUT'])
+def update_customer(customer_id):
+    try:
+        cur = mysql.connection.cursor()
+        # Extract data from request
+        data = request.json
+        name = data['Name']
+        dob_str = data['DOB']
+        dob = datetime.strptime(dob_str, '%a, %d %b %Y %H:%M:%S %Z').strftime('%Y-%m-%d')
+        address = data['Address']
+        phone_number = data['PhoneNumber']
+        email = data['Email']
+        employee_id = data['Employee_ID']
+        password = data['Password']  # Add password field
+        # Update customer in database
+        cur.execute(
+            "UPDATE Customers SET Name = %s, DOB = %s, Address = %s, PhoneNumber = %s, Email = %s, Employee_ID = %s, Password = %s WHERE Customer_ID = %s",
+            (name, dob, address, phone_number, email, employee_id, password, customer_id)
+        )
+        mysql.connection.commit()
+        cur.close()
+        return jsonify({"message": "Customer updated successfully"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+# Delete Customer
+@app.route('/customer/<int:customer_id>', methods=['DELETE'])
+def delete_customer(customer_id):
+    try:
+        cur = mysql.connection.cursor()
+        # Delete customer from database
+        cur.execute("DELETE FROM Customers WHERE Customer_ID = %s", (customer_id,))
+        mysql.connection.commit()
+        cur.close()
+        return jsonify({"message": "Customer deleted successfully"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
 # *****************************************************************************
 
 # ************************Eddie (Car, Car_part table)**************************
