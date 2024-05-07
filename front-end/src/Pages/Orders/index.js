@@ -1,23 +1,23 @@
-import React, { useEffect, useState } from "react";
-import { Button, Form, Input, DatePicker, message, Modal, Table, Typography } from "antd";
+import React, { useState, useEffect } from "react";
+import { Button, Table, Modal, Form, Input, message, Typography } from "antd";
 
-const RecentTransactions = () => {
+const TransactionTable = () => {
   const [transactions, setTransactions] = useState([]);
-  const [editingKey, setEditingKey] = useState('');
+  const [editingKey, setEditingKey] = useState("");
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [deleteRecord, setDeleteRecord] = useState(null);
   const [addModalVisible, setAddModalVisible] = useState(false);
 
   const fetchTransactions = async () => {
     try {
-      const response = await fetch('http://127.0.0.1:5000/transactions');
+      const response = await fetch("http://127.0.0.1:5000/transactions");
       if (!response.ok) {
-        throw new Error('Failed to fetch transactions');
+        throw new Error("Failed to fetch transactions");
       }
       const data = await response.json();
       setTransactions(data);
     } catch (error) {
-      console.error('Error fetching transactions:', error);
+      console.error("Error fetching transactions:", error);
     }
   };
 
@@ -32,37 +32,40 @@ const RecentTransactions = () => {
   const handleSave = async (record) => {
     try {
       const updatedTransaction = { ...record };
-      const response = await fetch(`http://127.0.0.1:5000/transactions/${record.Transaction_ID}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updatedTransaction),
-      });
-  
+      const response = await fetch(
+        `http://127.0.0.1:5000/transactions/${record.Transaction_ID}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedTransaction),
+        }
+      );
+
       if (!response.ok) {
-        throw new Error('Failed to update transaction');
+        throw new Error("Failed to update transaction");
       }
-  
-      message.success('Transaction updated successfully.');
-      setEditingKey('');
+
+      message.success("Transaction updated successfully.");
+      setEditingKey("");
       fetchTransactions(); // Fetch updated transactions after saving
     } catch (error) {
-      console.error('Error updating transaction:', error);
-      message.error('Failed to update transaction.');
+      console.error("Error updating transaction:", error);
+      message.error("Failed to update transaction.");
     }
   };
 
   const handleDelete = async (record) => {
     try {
       await fetch(`http://127.0.0.1:5000/transactions/${record.Transaction_ID}`, {
-        method: 'DELETE',
+        method: "DELETE",
       });
-      setTransactions(transactions.filter(item => item.Transaction_ID !== record.Transaction_ID));
-      message.success('Transaction deleted successfully.');
+      setTransactions(transactions.filter((item) => item.Transaction_ID !== record.Transaction_ID));
+      message.success("Transaction deleted successfully.");
     } catch (error) {
-      console.error('Error deleting transaction:', error);
-      message.error('Failed to delete transaction.');
+      console.error("Error deleting transaction:", error);
+      message.error("Failed to delete transaction.");
     }
   };
 
@@ -85,27 +88,22 @@ const RecentTransactions = () => {
 
   const handleAddSubmit = async (values) => {
     try {
-      const randomTransactionID = Math.floor(Math.random() * 900) + 100;
-      const transactionData = {
-        Transaction_ID: randomTransactionID,
-        ...values
-      };
-      const response = await fetch('http://127.0.0.1:5000/transactions', {
-        method: 'POST',
+      const response = await fetch("http://127.0.0.1:5000/transactions", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(transactionData),
+        body: JSON.stringify(values),
       });
       if (!response.ok) {
-        throw new Error('Failed to add transaction');
+        throw new Error("Failed to add transaction");
       }
-      message.success('Transaction added successfully.');
+      message.success("Transaction added successfully.");
       setAddModalVisible(false);
       fetchTransactions(); // Fetch updated transactions after adding
     } catch (error) {
-      console.error('Error adding transaction:', error);
-      message.error('Failed to add transaction.');
+      console.error("Error adding transaction:", error);
+      message.error("Failed to add transaction.");
     }
   };
 
@@ -118,46 +116,54 @@ const RecentTransactions = () => {
       title: "Part ID",
       dataIndex: "Part_ID",
       editable: true,
-      render: (text, record) => renderCell(record, 'Part_ID', text),
+      render: (text, record) => renderCell(record, "Part_ID", text),
     },
     {
       title: "VIN",
       dataIndex: "VIN",
       editable: true,
-      render: (text, record) => renderCell(record, 'VIN', text),
+      render: (text, record) => renderCell(record, "VIN", text),
     },
     {
       title: "Date",
       dataIndex: "Date",
       editable: true,
-      render: (text, record) => renderCell(record, 'Date', text),
+      render: (text, record) => renderCell(record, "Date", text),
     },
     {
       title: "Price",
       dataIndex: "Price",
       editable: true,
-      render: (text, record) => renderCell(record, 'Price', text),
+      render: (text, record) => renderCell(record, "Price", text),
     },
     {
       title: "Employee ID",
       dataIndex: "Employee_ID",
       editable: true,
-      render: (text, record) => renderCell(record, 'Employee_ID', text),
+      render: (text, record) => renderCell(record, "Employee_ID", text),
     },
     {
-      title: 'Actions',
-      key: 'actions',
+      title: "Actions",
+      key: "actions",
       render: (text, record) => {
         const editable = record.Transaction_ID === editingKey;
         return editable ? (
           <>
-            <Button type="primary" onClick={() => handleSave(record)}>Save</Button>
-            <Button type="danger" onClick={() => setEditingKey('')}>Cancel</Button>
+            <Button type="primary" onClick={() => handleSave(record)}>
+              Save
+            </Button>
+            <Button type="danger" onClick={() => setEditingKey("")}>
+              Cancel
+            </Button>
           </>
         ) : (
           <>
-            <Button type="primary" onClick={() => handleEdit(record)}>Edit</Button>
-            <Button type="danger" onClick={() => handleDeleteConfirm(record)}>Delete</Button>
+            <Button type="primary" onClick={() => handleEdit(record)}>
+              Edit
+            </Button>
+            <Button type="danger" onClick={() => handleDeleteConfirm(record)}>
+              Delete
+            </Button>
           </>
         );
       },
@@ -167,11 +173,15 @@ const RecentTransactions = () => {
   const handleFieldChange = (record, dataIndex, value) => {
     const updatedRecord = { ...record, [dataIndex]: value };
     // Update the transactions state to reflect the changes
-    setTransactions(transactions.map(item => (item.Transaction_ID === record.Transaction_ID ? updatedRecord : item)));
+    setTransactions(
+      transactions.map((item) =>
+        item.Transaction_ID === record.Transaction_ID ? updatedRecord : item
+      )
+    );
   };
 
   const renderCell = (record, dataIndex, text) => {
-    const editable = record.Transaction_ID === editingKey;
+    const editable = record.Transaction_ID === editingKey && dataIndex !== "Date";
     return editable ? (
       <Form.Item
         style={{ margin: 0 }}
@@ -184,7 +194,11 @@ const RecentTransactions = () => {
           },
         ]}
       >
-        <Input onChange={(e) => handleFieldChange(record, dataIndex, e.target.value)} />
+        <Input
+          onChange={(e) =>
+            handleFieldChange(record, dataIndex, e.target.value)
+          }
+        />
       </Form.Item>
     ) : (
       text
@@ -193,13 +207,15 @@ const RecentTransactions = () => {
 
   return (
     <>
-      <Typography.Text>Recent Transactions</Typography.Text>
-      <Button type="primary" onClick={handleAdd} style={{ marginBottom: '16px' }}>Add Transaction</Button>
-      <Table
-        columns={columns}
-        dataSource={transactions}
-        pagination={{ pageSize: 4 }}
-      />
+      <Typography.Text>Transaction Table</Typography.Text>
+      <Button
+        type="primary"
+        onClick={handleAdd}
+        style={{ marginBottom: "16px" }}
+      >
+        Add Transaction
+      </Button>
+      <Table columns={columns} dataSource={transactions} pagination={{ pageSize: 4 }} />
       <Modal
         title="Confirm Delete"
         visible={deleteModalVisible}
@@ -227,36 +243,54 @@ const AddTransactionForm = ({ onSubmit }) => {
   const [form] = Form.useForm();
 
   const onFinish = (values) => {
-    const { Date, ...restValues } = values;
-    const formattedDate = new Date(`${Date.format("YYYY-MM-DD")} 00:00:00 GMT`).toUTCString();
-    const finalData = { ...restValues, Date: formattedDate };
-    console.log("Final Data:", finalData); // Log the final data
-    onSubmit(finalData);
+    onSubmit(values);
     form.resetFields();
   };
+
   return (
     <Form form={form} onFinish={onFinish} layout="vertical">
-      <Form.Item name="Part_ID" label="Part ID" rules={[{ required: true, message: 'Please input the Part ID!' }]}>
+      <Form.Item
+        name="Part_ID"
+        label="Part ID"
+        rules={[{ required: true, message: "Please input the Part ID!" }]}
+      >
         <Input />
       </Form.Item>
-      <Form.Item name="VIN" label="VIN" rules={[{ required: true, message: 'Please input the VIN!' }]}>
+      <Form.Item
+        name="VIN"
+        label="VIN"
+        rules={[{ required: true, message: "Please input the VIN!" }]}
+      >
         <Input />
       </Form.Item>
-      <Form.Item name="Date" label="Date" rules={[{ required: true, message: 'Please input the Date!' }]}>
-        <DatePicker style={{ width: '100%' }} />
+      <Form.Item
+        name="Date"
+        label="Date"
+        rules={[{ required: true, message: "Please input the Date!" }]}
+      >
+        <Input />
       </Form.Item>
-      <Form.Item name="Price" label="Price" rules={[{ required: true, message: 'Please input the Price!' }]}>
-        <Input type="number" min={0} />
+      <Form.Item
+        name="Price"
+        label="Price"
+        rules={[{ required: true, message: "Please input the Price!" }]}
+      >
+        <Input />
       </Form.Item>
-      <Form.Item name="Employee_ID" label="Employee ID" rules={[{ required: true, message: 'Please input the Employee ID!' }]}>
+      <Form.Item
+        name="Employee_ID"
+        label="Employee ID"
+        rules={[{ required: true, message: "Please input the Employee ID!" }]}
+      >
         <Input />
       </Form.Item>
       <Form.Item>
-        <Button type="primary" htmlType="submit">Add Transaction</Button>
+        <Button type="primary" htmlType="submit">
+          Add Transaction
+        </Button>
       </Form.Item>
     </Form>
   );
-}
+};
 
-
-export default RecentTransactions;
+export default TransactionTable;
