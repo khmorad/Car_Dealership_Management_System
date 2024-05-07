@@ -385,11 +385,10 @@ def delete_part(part_id):
 def add_transaction():
     try:
         data = request.json
-        if not data or 'Transaction_ID' not in data or 'Part_ID' not in data or 'VIN' not in data or 'Date' not in data or 'Price' not in data or 'Employee_ID' not in data:
+        if not data or 'Transaction_ID' not in data  or 'VIN' not in data or 'Customer_ID' not in data or'Date' not in data or 'Price' not in data or 'Employee_ID' not in data:
             return jsonify({'error': 'Missing required fields in request'}), 400
 
         id = data['Transaction_ID']
-        part_id = data['Part_ID']
         vin = data['VIN']
 
         # Extract and format the date
@@ -398,11 +397,11 @@ def add_transaction():
 
         price = data['Price']
         employee_id = data['Employee_ID']
-
+        customer_id = data['Customer_ID']
         cursor = mysql.connection.cursor()
         cursor.execute(
-            "INSERT INTO transactions (Transaction_ID, Part_ID, VIN, Date, Price, Employee_ID) VALUES (%s, %s, %s, %s, %s, %s)",
-            (id, part_id, vin, date, price, employee_id))
+            "INSERT INTO transactions (Transaction_ID, VIN, Customer_ID, Date, Price, Employee_ID) VALUES (%s, %s, %s, %s, %s, %s)",
+            (id, vin,customer_id, date, price, employee_id))
         mysql.connection.commit()
 
         return jsonify({'message': 'Transaction created successfully'}), 201
@@ -459,12 +458,15 @@ def update_transaction(Transaction_ID):
 
         # Prepare update parameters with potential sanitization (consider libraries like SQLAlchemy)
         update_data = {}
-        if 'Part_ID' in data:
-            update_data['Part_ID'] = data['Part_ID']  # Sanitize if needed
         if 'VIN' in data:
             update_data['VIN'] = data['VIN']  # Sanitize if needed
+        if 'Customer_ID' in data:
+            update_data['Customer_ID'] = data['Customer_ID']  # Sanitize if needed
         if 'Date' in data:
-            update_data['Date'] = data['Date']
+            # Parse and format the date
+            date_str = data['Date']
+            date = datetime.strptime(date_str, '%a, %d %b %Y %H:%M:%S %Z').strftime('%Y-%m-%d')
+            update_data['Date'] = date
         if 'Price' in data:
             update_data['Price'] = data['Price']
         if 'Employee_ID' in data:
@@ -481,7 +483,6 @@ def update_transaction(Transaction_ID):
 
         mysql.connection.commit()
         return jsonify({'message': 'Transaction updated successfully'}), 200
-
     except Exception as e:
         mysql.connection.rollback()
         return jsonify({'error': str(e)}), 500
@@ -491,20 +492,16 @@ def update_transaction(Transaction_ID):
 
 
 @app.route("/transactions/<int:Transaction_ID>", methods=['DELETE'])
-def delete_transactions(Transaction_ID):
+def delete_transaction(Transaction_ID):
     cursor = mysql.connection.cursor()
     try:
-        # used inner join to gather all the
+        # Delete the transaction based on Transaction_ID
         cursor.execute("""
-      DELETE t
-      FROM Transactions t
-      INNER JOIN Cars c ON t.VIN = c.VIN
-      INNER JOIN Car_part cp ON t.Part_ID = cp.Part_ID
-      INNER JOIN Employees e ON t.Employee_ID = e.Employee_ID
-      WHERE t.Transaction_ID = %s
-    """, [Transaction_ID])
+            DELETE FROM Transactions
+            WHERE Transaction_ID = %s
+        """, [Transaction_ID])
 
-        # check if rows were deleted (optional)
+        # Check if any row was deleted
         if cursor.rowcount == 0:
             return jsonify({'error': 'Transaction not found'}), 404
 
@@ -517,6 +514,7 @@ def delete_transactions(Transaction_ID):
 
     finally:
         cursor.close()
+
 
 
 # *****************************************************************************
