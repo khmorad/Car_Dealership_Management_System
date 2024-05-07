@@ -113,12 +113,6 @@ const TransactionTable = () => {
       dataIndex: "Transaction_ID",
     },
     {
-      title: "Part ID",
-      dataIndex: "Part_ID",
-      editable: true,
-      render: (text, record) => renderCell(record, "Part_ID", text),
-    },
-    {
       title: "VIN",
       dataIndex: "VIN",
       editable: true,
@@ -249,13 +243,7 @@ const AddTransactionForm = ({ onSubmit }) => {
 
   return (
     <Form form={form} onFinish={onFinish} layout="vertical">
-      <Form.Item
-        name="Part_ID"
-        label="Part ID"
-        rules={[{ required: true, message: "Please input the Part ID!" }]}
-      >
-        <Input />
-      </Form.Item>
+
       <Form.Item
         name="VIN"
         label="VIN"
