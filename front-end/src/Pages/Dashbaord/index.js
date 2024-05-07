@@ -173,32 +173,29 @@ function DashboardCard({ title, value, icon }) {
 
 
 
-function RecentOrders() {
+const RecentOrders = () => {
   const [carPart, setCarPart] = useState([]);
   const [editingKey, setEditingKey] = useState('');
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [deleteRecord, setDeleteRecord] = useState(null);
   const [addModalVisible, setAddModalVisible] = useState(false);
 
-  useEffect(() => {
-    // Fetch car parts data and update carPart state
-    const fetchCarParts = async () => {
-      try {
-        const response = await fetch('http://127.0.0.1:5000/browse/parts/all');
-        if (!response.ok) {
-          throw new Error('Failed to fetch car parts');
-        }
-        const data = await response.json();
-        setCarPart(data);
-        console.log("car part: ", data); // Log the fetched data, not the state variable
-      } catch (error) {
-        console.error('Error fetching car parts:', error);
+  const fetchCarParts = async () => {
+    try {
+      const response = await fetch('http://127.0.0.1:5000/browse/parts/all');
+      if (!response.ok) {
+        throw new Error('Failed to fetch car parts');
       }
-    };
-  
+      const data = await response.json();
+      setCarPart(data);
+    } catch (error) {
+      console.error('Error fetching car parts:', error);
+    }
+  };
+
+  useEffect(() => {
     fetchCarParts();
-  }, [setCarPart]); // Add setCarPart as a dependency
-  
+  }, []);
 
   const handleEdit = (record) => {
     setEditingKey(record.Part_ID);
@@ -206,22 +203,28 @@ function RecentOrders() {
 
   const handleSave = async (record) => {
     try {
-      const updatedCarPart = { ...record }; // Assuming the edited record is passed directly
-      // Send request to update the car part on the server
-      await fetch(`http://127.0.0.1:5000/browse/parts/${record.Part_ID}`, {
+      const updatedCarPart = { ...record };
+      const response = await fetch(`http://127.0.0.1:5000/update/parts`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(updatedCarPart),
       });
+  
+      if (!response.ok) {
+        throw new Error('Failed to update car part');
+      }
+  
       message.success('Car part updated successfully.');
       setEditingKey('');
+      fetchCarParts(); // Fetch updated car parts after saving
     } catch (error) {
       console.error('Error updating car part:', error);
       message.error('Failed to update car part.');
     }
   };
+  
 
   const handleDelete = async (record) => {
     try {
@@ -254,30 +257,12 @@ function RecentOrders() {
   };
 
   const handleAddSubmit = async (values) => {
-
-    const fetchCarParts = async () => {
-      try {
-        const response = await fetch('http://127.0.0.1:5000/browse/parts/all');
-        if (!response.ok) {
-          throw new Error('Failed to fetch car parts');
-        }
-        const data = await response.json();
-        setCarPart(data);
-        console.log("car part: ", data);
-      } catch (error) {
-        console.error('Error fetching car parts:', error);
-      }
-    };
     try {
-      // Generate a random 3-digit number for Part_ID
       const randomPartID = Math.floor(Math.random() * 900) + 100;
-  
-      // Combine the random Part_ID with the submitted values
       const carPartData = {
         Part_ID: randomPartID,
         ...values
       };
-  
       const response = await fetch('http://127.0.0.1:5000/add/parts', {
         method: 'POST',
         headers: {
@@ -285,28 +270,18 @@ function RecentOrders() {
         },
         body: JSON.stringify(carPartData),
       });
-  
       if (!response.ok) {
         throw new Error('Failed to add car part');
       }
-  
-      // If the response is successful, show a success message
       message.success('Car part added successfully.');
-  
-      // Hide the add car part modal
       setAddModalVisible(false);
-  
-      // Fetch and update the list of car parts to reflect the addition
-      fetchCarParts();
+      fetchCarParts(); // Fetch updated car parts after adding
     } catch (error) {
       console.error('Error adding car part:', error);
-      // If there's an error, show an error message
       message.error('Failed to add car part.');
     }
   };
   
-  
-
   const columns = [
     {
       title: "Part ID",
@@ -315,30 +290,71 @@ function RecentOrders() {
     {
       title: "Name",
       dataIndex: "Name",
+      editable: true,
+      render: (text, record) => renderCell(record, 'Name', text),
     },
     {
       title: "Brand",
       dataIndex: "Brand",
+      editable: true,
+      render: (text, record) => renderCell(record, 'Brand', text),
     },
     {
       title: "Fitment",
       dataIndex: "Fitment",
+      editable: true,
+      render: (text, record) => renderCell(record, 'Fitment', text),
     },
     {
       title: "Price",
       dataIndex: "Price",
+      editable: true,
+      render: (text, record) => renderCell(record, 'Price', text),
     },
     {
       title: 'Actions',
       key: 'actions',
-      render: (text, record) => (
-        <>
-          <Button type="primary" onClick={() => handleEdit(record)}>Edit</Button>
-          <Button type="danger" onClick={() => handleDeleteConfirm(record)}>Delete</Button>
-        </>
-      ),
+      render: (text, record) => {
+        const editable = record.Part_ID === editingKey;
+        return editable ? (
+          <>
+            <Button type="primary" onClick={() => handleSave(record)}>Save</Button>
+            <Button type="danger" onClick={() => setEditingKey('')}>Cancel</Button>
+          </>
+        ) : (
+          <>
+            <Button type="primary" onClick={() => handleEdit(record)}>Edit</Button>
+            <Button type="danger" onClick={() => handleDeleteConfirm(record)}>Delete</Button>
+          </>
+        );
+      },
     },
   ];
+  const handleFieldChange = (record, dataIndex, value) => {
+    const updatedRecord = { ...record, [dataIndex]: value };
+    // Update the carPart state to reflect the changes
+    setCarPart(carPart.map(item => (item.Part_ID === record.Part_ID ? updatedRecord : item)));
+  };
+  const renderCell = (record, dataIndex, text) => {
+    const editable = record.Part_ID === editingKey;
+    return editable ? (
+<Form.Item
+  style={{ margin: 0 }}
+  name={dataIndex}
+  initialValue={text}
+  rules={[
+    {
+      required: true,
+      message: `Please Input ${dataIndex}!`,
+    },
+  ]}
+>
+  <Input onChange={(e) => handleFieldChange(record, dataIndex, e.target.value)} />
+</Form.Item>
+    ) : (
+      text
+    );
+  };
 
   return (
     <>
@@ -372,7 +388,7 @@ function RecentOrders() {
   );
 }
 
-function AddCarPartForm({ onSubmit }) {
+const AddCarPartForm = ({ onSubmit }) => {
   const [form] = Form.useForm();
 
   const onFinish = (values) => {
@@ -382,7 +398,6 @@ function AddCarPartForm({ onSubmit }) {
 
   return (
     <Form form={form} onFinish={onFinish} layout="vertical">
-
       <Form.Item name="Name" label="Name" rules={[{ required: true, message: 'Please input the name of the car part!' }]}>
         <Input />
       </Form.Item>
@@ -401,10 +416,6 @@ function AddCarPartForm({ onSubmit }) {
     </Form>
   );
 }
-
-
-
-
 function DashboardChart({ transactions }) {
   const [revenueData, setRevenueData] = useState({
     labels: [],
