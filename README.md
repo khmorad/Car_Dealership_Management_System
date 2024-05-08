@@ -22,20 +22,20 @@ The Car Dealership Management System is designed to revolutionize how car dealer
 | Week 5                | - Integrate front-end and back-end components <br> - Bug fixing after integration           |
 | Week 6                | - Write project documentation <br> - Prepare for project demo to the class                   |
 
-## Responsibilities
+## Responsibilities (Contributions)
 - **Rio Taiga:**
   - Database design and implementation
-  - Constructing back-end environment
+  - Constructing back-end environment (Customer & Employee)
   - Error handling
 
 - **Yar Moradpour:**
   - Front-end development
   - UI/UX design
-  - Database design and implementation
+  - Database design and implementation (Transactions)
 
 - **Manh Tuong Nguyen:**
   - Back-end development
-  - Database design and implementation
+  - Database design and implementation (Car & Car Parts)
   - Testing and quality assurance
 
 ## Outcomes
@@ -59,3 +59,13 @@ The Car Dealership Management System is designed to revolutionize how car dealer
 - **Front-end:** React (JavaScript)
 - **Back-end:** Python (Flask framework), SQL
 
+
+## How to Run the Program 
+Step 1:
+This application is split into two parts: the backend and the frontend. First, we need to start up the backend so that the frontend can talk to it.
+
+
+## Screenshots of the Program
+
+
+## Recording of the Program
