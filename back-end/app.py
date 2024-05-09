@@ -45,12 +45,16 @@ def create_employee():
         return jsonify({"error": str(e)}), 400
 
 # Read all Employees
-@app.route('/employee', methods=['GET'])
-def get_employees():
+@app.route('/employee/<string:id>', methods=['GET'])
+def get_employees(id):
     try:
         cur = mysql.connection.cursor()
         # Query database for employees (excluding password field)
-        cur.execute("SELECT * FROM Employees")
+        if id == "all":
+            cur.execute("SELECT * FROM Employees")
+        else:
+            id = int(id)
+            cur.execute("SELECT * FROM Employees WHERE Employee_ID=%s", (id,))
         employees = cur.fetchall()
         cur.close()
         return jsonify(employees), 200
@@ -122,12 +126,16 @@ def create_customer():
         return jsonify({"error": str(e)}), 400
 
 # Read all Customers
-@app.route('/customer', methods=['GET'])
-def get_customers():
+@app.route('/customer/<string:id>', methods=['GET'])
+def get_customers(id):
     try:
         cur = mysql.connection.cursor()
         # Query database for customers (excluding password field)
-        cur.execute("SELECT * FROM Customers")
+        if id == "all":
+            cur.execute("SELECT * FROM Customers")
+        else:
+            id = int(id)
+            cur.execute("SELECT * FROM Customers WHERE Customer_ID=%s", (id,))
         customers = cur.fetchall()
         cur.close()
         return jsonify(customers), 200
@@ -400,7 +408,7 @@ def add_transaction():
         customer_id = data['Customer_ID']
         cursor = mysql.connection.cursor()
         cursor.execute(
-            "INSERT INTO transactions (Transaction_ID, VIN, Customer_ID, Date, Price, Employee_ID) VALUES (%s, %s, %s, %s, %s, %s)",
+            "INSERT INTO transactions (Transaction_ID, VIN, CustomerID, Date, Price, Employee_ID) VALUES (%s, %s, %s, %s, %s, %s)",
             (id, vin,customer_id, date, price, employee_id))
         mysql.connection.commit()
 
@@ -414,16 +422,26 @@ def add_transaction():
     # read
 
 
-@app.route("/transactions", methods=['GET'])
-def get_transactions():
+@app.route("/transactions/<string:people>/<int:id>", methods=['GET'])
+def get_transactions(people, id):
+    cursor = mysql.connection.cursor()
     try:
-        cursor = mysql.connection.cursor()
-        cursor.execute('SELECT * from transactions;')
-        transactions = cursor.fetchall()
-        cursor.close()
+        if people == "Customer":
+            cursor.execute('SELECT * FROM Transactions WHERE CustomerID = %s;', (id,))
+            transactions = cursor.fetchall()
+        elif people == "Employee":
+            cursor.execute('SELECT * FROM Transactions WHERE Employee_ID = %s;', (id,))
+            transactions = cursor.fetchall()
+        elif people == "All":
+            cursor.execute('SELECT * FROM Transactions;')
+            transactions = cursor.fetchall()
+        else:
+            return jsonify({'error': 'Wrong table'})
         return jsonify(transactions), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+    finally:
+        cursor.close()
 
 
 @app.route("/transactions/<int:Transaction_ID>", methods=['GET'])
