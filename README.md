@@ -1,5 +1,7 @@
 # Car Dealership Management System
-![Index Page](/project_resourses/logo.png)
+<div align="center">
+  <img src="/project_resources/logo.png" alt="Index Page">
+</div>
 
 ## Team Members
 - Yar Moradpour
