@@ -25,6 +25,7 @@ export default function ChatAssistant() {
         .then((response) => response.json())
         .then((data) => {
           setCarInfo(data);
+          console.log(canInfo)
         })
         .catch((error) => console.error("Error fetching cars:", error));
     }, []);
@@ -48,7 +49,7 @@ export default function ChatAssistant() {
       const promptMessage = {
         role: "system",
         content:
-          `This is a chat for assisting Car dealership where It would answer anything car related answer based on car inventory car invertory: ${canInfo}`,
+          `This is a chat for assisting Car dealership where It would answer or recommend anything car related based on car inventory car invertory and nothing else: ${JSON.stringify(canInfo)}`,
       };
       const apiRequestBody = {
         model: "gpt-3.5-turbo",

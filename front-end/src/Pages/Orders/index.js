@@ -209,7 +209,7 @@ const TransactionTable = () => {
       >
         Add Transaction
       </Button>
-      <Table columns={columns} dataSource={transactions} pagination={{ pageSize: 4 }} />
+      <Table columns={columns} dataSource={transactions} pagination={{ pageSize: 100 }} />
       <Modal
         title="Confirm Delete"
         visible={deleteModalVisible}

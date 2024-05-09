@@ -62,7 +62,10 @@ export default function Infowindow() {
               {selectedCar.Gas_Type}
             </li>
           </ul>
-          <button onClick={() => setSelectedCar(null)} className="button-86">Close</button>
+          <div className="buttons">
+          <button onClick={() => setSelectedCar(null)} className="circular-button">Close</button>
+          <button className="circular-button" onClick={()=>{console.log("hi")}}>Buy</button>
+          </div>
         </div>
       </div>
     );
@@ -89,7 +92,12 @@ export default function Infowindow() {
       setFilteredCars(filterValue);
     }
   };
-
+  const handleBuyClick = (event, car) => {
+    event.stopPropagation(); // Prevents the click event from bubbling up to the parent elements
+  
+    // Do whatever you want to do when the "Buy" button is clicked
+    console.log("Buy button clicked for car:", car);
+  };
   const handleCheckFilter = () => {
     let filteredCar = [...carInfo];
     if (truckCheckBox.current && truckCheckBox.current.checked) {
@@ -251,7 +259,8 @@ export default function Infowindow() {
                   <span className="detailLabel">Price:</span> {`$${car.Price}`}
                 </li>
               </ul>
-              <button className="circular-button">Buy</button>
+              
+
             </div>
           </div>
         ))}
