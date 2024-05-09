@@ -9,8 +9,15 @@
 ## Project Description
 The Car Dealership Management System is designed to revolutionize how car dealerships operate in the competitive automotive industry. It integrates inventory management, customer relations, sales tracking, and reporting functionalities to enhance customer satisfaction and streamline dealership operations.
 
-## ER Diagram
-![Index Page](/project_resourses/ER_diagram.png)
+## How to Run the Program 
+Step 1:
+This application is split into two parts: the backend and the frontend. First, we need to start up the backend so that the frontend can talk to it.
+
+## Screenshots of the Program
+
+
+## Recording of the Program
+
 
 ## Sprint Plans
 
@@ -26,7 +33,7 @@ The Car Dealership Management System is designed to revolutionize how car dealer
 - **Rio Taiga:**
   - Database design and implementation
   - Constructing back-end environment (Customer & Employee)
-  - Error handling
+  - Error handling (apply Status Code)
 
 - **Yar Moradpour:**
   - Front-end development
@@ -59,13 +66,6 @@ The Car Dealership Management System is designed to revolutionize how car dealer
 - **Front-end:** React (JavaScript)
 - **Back-end:** Python (Flask framework), SQL
 
+## ER Diagram
+![Index Page](/project_resourses/ER_diagram.png)
 
-## How to Run the Program 
-Step 1:
-This application is split into two parts: the backend and the frontend. First, we need to start up the backend so that the frontend can talk to it.
-
-
-## Screenshots of the Program
-
-
-## Recording of the Program
