@@ -6,18 +6,36 @@
 - Rio Taiga
 - Manh Tuong Nguyen
 
-## Project Description
-The Car Dealership Management System is designed to revolutionize how car dealerships operate in the competitive automotive industry. It integrates inventory management, customer relations, sales tracking, and reporting functionalities to enhance customer satisfaction and streamline dealership operations.
-
 ## How to Run the Program 
-Step 1:
-This application is split into two parts: the backend and the frontend. First, we need to start up the backend so that the frontend can talk to it.
+This application is split into two parts: backend and the frontend. We would need to start up the backend so that the frontend can talk to it.
+
+> To ensure that backend is running smoothly, please have the latest version of python installed. Please clone our repository as well.
+
+How to run the Back-end
+- Change Directly: `cd ./back-end`
+- Making sure we install flask: `pip install -U Flask` 
+- Run the file: `flask --app app.py run`
+
+How to run the Front-end
+- Change Directory: `cd ./front-end`
+- To install dependencies: `npm install` 
+- Run the Front end: `npm start`
 
 ## Screenshots of the Program
 
+Home Page when Customer is Logged in
+![Index Page](/project_resourses/customerHome.png)
+Dashboard when Employee is Logged in
+![Index Page](/project_resourses/employeeDash.png)
 
 ## Recording of the Program
 
+
+## Project Description
+The Car Dealership Management System is designed to revolutionize how car dealerships operate in the competitive automotive industry. It integrates inventory management, customer relations, sales tracking, and reporting functionalities to enhance customer satisfaction and streamline dealership operations.
+
+## ER Diagram
+![Index Page](/project_resourses/ER.drawio-3.png)
 
 ## Sprint Plans
 
@@ -65,7 +83,3 @@ This application is split into two parts: the backend and the frontend. First, w
 ## Languages
 - **Front-end:** React (JavaScript)
 - **Back-end:** Python (Flask framework), SQL
-
-## ER Diagram
-![Index Page](/project_resourses/ER_diagram.png)
-
