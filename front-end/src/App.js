@@ -27,7 +27,7 @@ function App() {
         setIsEmployee={setIsEmployee}
       />
       <ChatAssistant />
-      {loginStatus && isEmployee ? <Cardash /> : <Home />}
+      {loginStatus && isEmployee ? <Cardash /> : <Home showLogin={showLogin}loginStatus={loginStatus} user={user} isEmployee={isEmployee}/>}
 
     </div>
   );

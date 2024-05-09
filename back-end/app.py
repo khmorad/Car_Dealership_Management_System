@@ -44,30 +44,13 @@ def create_employee():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
-# Read all Employees records
+# Read all Employees
 @app.route('/employee', methods=['GET'])
 def get_employees():
     try:
         cur = mysql.connection.cursor()
-        # Query database for employees
-        cur.execute("SELECT * FROM Employees")
-        employees = cur.fetchall()
-        cur.close()
-        return jsonify(employees), 200
-    except Exception as e:
-        return jsonify({"error": str(e)}), 400
-
-# Read Employees data with restriction
-@app.route('/employee/<string:id>', methods=['GET'])
-def get_employees_with_id(id):
-    try:
-        cur = mysql.connection.cursor()
         # Query database for employees (excluding password field)
-        if id == "all":
-            cur.execute("SELECT * FROM Employees")
-        else:
-            id = int(id)
-            cur.execute("SELECT * FROM Employees WHERE Employee_ID=%s", (id,))
+        cur.execute("SELECT * FROM Employees")
         employees = cur.fetchall()
         cur.close()
         return jsonify(employees), 200
@@ -138,30 +121,13 @@ def create_customer():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
-#Read all Customers record
+# Read all Customers
 @app.route('/customer', methods=['GET'])
 def get_customers():
     try:
         cur = mysql.connection.cursor()
-        # Query database for customers
-        cur.execute("SELECT * FROM Customers")
-        customers = cur.fetchall()
-        cur.close()
-        return jsonify(customers), 200
-    except Exception as e:
-        return jsonify({"error": str(e)}), 400
-
-# Read Customers data with restriction
-@app.route('/customer/<string:id>', methods=['GET'])
-def get_customers_with_id(id):
-    try:
-        cur = mysql.connection.cursor()
         # Query database for customers (excluding password field)
-        if id == "all":
-            cur.execute("SELECT * FROM Customers")
-        else:
-            id = int(id)
-            cur.execute("SELECT * FROM Customers WHERE Customer_ID=%s", (id,))
+        cur.execute("SELECT * FROM Customers")
         customers = cur.fetchall()
         cur.close()
         return jsonify(customers), 200
@@ -434,7 +400,7 @@ def add_transaction():
         customer_id = data['Customer_ID']
         cursor = mysql.connection.cursor()
         cursor.execute(
-            "INSERT INTO transactions (Transaction_ID, VIN, CustomerID, Date, Price, Employee_ID) VALUES (%s, %s, %s, %s, %s, %s)",
+            "INSERT INTO transactions (Transaction_ID, VIN, Customer_ID, Date, Price, Employee_ID) VALUES (%s, %s, %s, %s, %s, %s)",
             (id, vin,customer_id, date, price, employee_id))
         mysql.connection.commit()
 
@@ -445,8 +411,9 @@ def add_transaction():
         return jsonify({'error': str(e)}), 500
     finally:
         cursor.close()
+    # read
 
-# Read all transactions record
+
 @app.route("/transactions", methods=['GET'])
 def get_transactions():
     try:
@@ -457,28 +424,6 @@ def get_transactions():
         return jsonify(transactions), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-
-# Read transactions data with restrictions
-@app.route("/transactions/<string:people>/<int:id>", methods=['GET'])
-def get_transactions_with_id(people, id):
-    cursor = mysql.connection.cursor()
-    try:
-        if people == "Customer":
-            cursor.execute('SELECT * FROM Transactions WHERE CustomerID = %s;', (id,))
-            transactions = cursor.fetchall()
-        elif people == "Employee":
-            cursor.execute('SELECT * FROM Transactions WHERE Employee_ID = %s;', (id,))
-            transactions = cursor.fetchall()
-        elif people == "All":
-            cursor.execute('SELECT * FROM Transactions;')
-            transactions = cursor.fetchall()
-        else:
-            return jsonify({'error': 'Wrong table'})
-        return jsonify(transactions), 200
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-    finally:
-        cursor.close()
 
 
 @app.route("/transactions/<int:Transaction_ID>", methods=['GET'])
