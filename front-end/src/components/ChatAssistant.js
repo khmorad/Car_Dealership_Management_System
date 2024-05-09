@@ -49,7 +49,7 @@ export default function ChatAssistant() {
       const promptMessage = {
         role: "system",
         content:
-          `This is a chat for assisting Car dealership where It would answer or recommend anything car related based on car inventory car invertory and nothing else: ${canInfo}`,
+          `This is a chat for assisting Car dealership where It would answer or recommend anything car related based on car inventory car invertory and nothing else: ${JSON.stringify(canInfo)}`,
       };
       const apiRequestBody = {
         model: "gpt-3.5-turbo",
