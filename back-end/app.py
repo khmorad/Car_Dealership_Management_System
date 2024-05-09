@@ -44,9 +44,22 @@ def create_employee():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
-# Read all Employees
+# Read all Employees records
+@app.route('/employee', methods=['GET'])
+def get_employees():
+    try:
+        cur = mysql.connection.cursor()
+        # Query database for employees
+        cur.execute("SELECT * FROM Employees")
+        employees = cur.fetchall()
+        cur.close()
+        return jsonify(employees), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+# Read Employees data with restriction
 @app.route('/employee/<string:id>', methods=['GET'])
-def get_employees(id):
+def get_employees_with_id(id):
     try:
         cur = mysql.connection.cursor()
         # Query database for employees (excluding password field)
@@ -125,9 +138,22 @@ def create_customer():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
-# Read all Customers
+#Read all Customers record
+@app.route('/customer', methods=['GET'])
+def get_customers():
+    try:
+        cur = mysql.connection.cursor()
+        # Query database for customers
+        cur.execute("SELECT * FROM Customers")
+        customers = cur.fetchall()
+        cur.close()
+        return jsonify(customers), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+# Read Customers data with restriction
 @app.route('/customer/<string:id>', methods=['GET'])
-def get_customers(id):
+def get_customers_with_id(id):
     try:
         cur = mysql.connection.cursor()
         # Query database for customers (excluding password field)
@@ -419,11 +445,22 @@ def add_transaction():
         return jsonify({'error': str(e)}), 500
     finally:
         cursor.close()
-    # read
 
+# Read all transactions record
+@app.route("/transactions", methods=['GET'])
+def get_transactions():
+    try:
+        cursor = mysql.connection.cursor()
+        cursor.execute('SELECT * from transactions;')
+        transactions = cursor.fetchall()
+        cursor.close()
+        return jsonify(transactions), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
+# Read transactions data with restrictions
 @app.route("/transactions/<string:people>/<int:id>", methods=['GET'])
-def get_transactions(people, id):
+def get_transactions_with_id(people, id):
     cursor = mysql.connection.cursor()
     try:
         if people == "Customer":
