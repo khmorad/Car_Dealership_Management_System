@@ -119,6 +119,12 @@ const TransactionTable = () => {
       render: (text, record) => renderCell(record, "VIN", text),
     },
     {
+      title: "Customer ID",
+      dataIndex: "Customer_ID",
+      editable: true,
+      render: (text, record) => renderCell(record, "Customer_ID", text),
+    },
+    {
       title: "Date",
       dataIndex: "Date",
       editable: true,

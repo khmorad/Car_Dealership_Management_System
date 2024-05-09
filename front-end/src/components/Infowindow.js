@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import "../stylings/Infowindow.css";
 
-export default function Infowindow() {
+export default function Infowindow({showLogin,loginStatus,user,isEmployee}) {
   const carFilter = useRef(null);
   const suvCheckBox = useRef(null);
   const truckCheckBox = useRef(null);
@@ -14,8 +14,16 @@ export default function Infowindow() {
 
   const [filteredCars, setFilteredCars] = useState([]);
   const [carInfo, setCarInfo] = useState([]);
+  const [customerInfo,setCustomerInfo] = useState([]);
   const [selectedCar, setSelectedCar] = useState(null);
-
+  useEffect(() => {
+    fetch("http://127.0.0.1:5000/customer")
+      .then((response) => response.json())
+      .then((data) => {
+        setCustomerInfo(data);
+      })
+      .catch((error) => console.error("Error fetching customer:", error));
+  }, []); 
   const handleClick = (car) => {
     setSelectedCar(car);
   };
@@ -64,7 +72,7 @@ export default function Infowindow() {
           </ul>
           <div className="buttons">
           <button onClick={() => setSelectedCar(null)} className="circular-button">Close</button>
-          <button className="circular-button" onClick={()=>{console.log("hi")}}>Buy</button>
+          <button className="circular-button" onClick={() => handleBuyClick(selectedCar)}>Buy</button>
           </div>
         </div>
       </div>
@@ -81,6 +89,7 @@ export default function Infowindow() {
       .catch((error) => console.error("Error fetching cars:", error));
   }, []);
 
+  const customer = customerInfo.find((customer)=> customer.Name === user)
   const handleFilter = () => {
     const searchedCar = carFilter.current.value.toLowerCase();
     if (searchedCar === "") {
@@ -92,12 +101,44 @@ export default function Infowindow() {
       setFilteredCars(filterValue);
     }
   };
-  const handleBuyClick = (event, car) => {
-    event.stopPropagation(); // Prevents the click event from bubbling up to the parent elements
-  
-    // Do whatever you want to do when the "Buy" button is clicked
-    console.log("Buy button clicked for car:", car);
+  const generateTransactionID = () => {
+
+    return Math.floor(Math.random() * 900) + 100;
   };
+  
+  const handleBuyClick = (car) => {
+    console.log(`customer: ${customer.Name}`)
+    const transaction = {
+      Customer_ID: customer ? customer.Customer_ID : null,
+      Date: new Date().toUTCString(),
+      Employee_ID: null,
+      Price: car.Price,
+      Transaction_ID: generateTransactionID(), 
+      VIN: car.VIN
+    };
+  
+
+    fetch('http://127.0.0.1:5000/transactions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(transaction),
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Failed to create transaction');
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log(data.message); 
+    })
+    .catch(error => {
+      console.error('Error creating transaction:', error);
+    });
+  };
+  
   const handleCheckFilter = () => {
     let filteredCar = [...carInfo];
     if (truckCheckBox.current && truckCheckBox.current.checked) {
