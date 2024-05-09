@@ -10,7 +10,7 @@
 The Car Dealership Management System is designed to revolutionize how car dealerships operate in the competitive automotive industry. It integrates inventory management, customer relations, sales tracking, and reporting functionalities to enhance customer satisfaction and streamline dealership operations.
 
 ## ER Diagram
-![Index Page](/project_resourses/ER_diagram.png)
+![Index Page](/project_resourses/ER.drawio-3.png)
 
 ## Sprint Plans
 
