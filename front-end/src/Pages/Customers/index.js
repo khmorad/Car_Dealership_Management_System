@@ -49,7 +49,7 @@ const CustomerTable = () => {
 
       message.success("Customer updated successfully.");
       setEditingKey("");
-      fetchCustomers(); // Fetch updated customers after saving
+      fetchCustomers(); 
     } catch (error) {
       console.error("Error updating customer:", error);
       message.error("Failed to update customer.");
@@ -100,7 +100,7 @@ const CustomerTable = () => {
       }
       message.success("Customer added successfully.");
       setAddModalVisible(false);
-      fetchCustomers(); // Fetch updated customers after adding
+      fetchCustomers(); 
     } catch (error) {
       console.error("Error adding customer:", error);
       message.error("Failed to add customer.");
@@ -184,7 +184,7 @@ const CustomerTable = () => {
 
   const handleFieldChange = (record, dataIndex, value) => {
     const updatedRecord = { ...record, [dataIndex]: value };
-    // Update the customers state to reflect the changes
+ 
     setCustomers(
       customers.map((item) =>
         item.Customer_ID === record.Customer_ID ? updatedRecord : item
@@ -227,7 +227,7 @@ const CustomerTable = () => {
       >
         Add Customer
       </Button>
-      <Table columns={columns} dataSource={customers} pagination={{ pageSize: 4 }} />
+      <Table columns={columns} dataSource={customers} pagination={{ pageSize: 100 }} />
       <Modal
         title="Confirm Delete"
         visible={deleteModalVisible}

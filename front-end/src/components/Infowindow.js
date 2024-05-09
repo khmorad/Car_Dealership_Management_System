@@ -63,7 +63,7 @@ export default function Infowindow() {
             </li>
           </ul>
           <div className="buttons">
-          <button onClick={() => setSelectedCar(null)} className="button-11">Close</button>
+          <button onClick={() => setSelectedCar(null)} className="circular-button">Close</button>
           <button className="circular-button" onClick={()=>{console.log("hi")}}>Buy</button>
           </div>
         </div>
