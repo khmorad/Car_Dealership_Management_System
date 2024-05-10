@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Button, Table, Modal, Form, Input, message, Typography } from "antd";
+import { Button, Table, Modal, Form, Input, message, Typography, DatePicker } from "antd";
+import moment from "moment";
 
 const TransactionTable = () => {
   const [transactions, setTransactions] = useState([]);
@@ -88,19 +89,30 @@ const TransactionTable = () => {
 
   const handleAddSubmit = async (values) => {
     try {
+      // Generating a 3-digit random number for Transaction_ID
+      const randomTransactionID = Math.floor(100 + Math.random() * 900);
+      const gmtDate = moment.utc(values.Date).format("ddd, DD MMM YYYY HH:mm:ss [GMT]");
+  
+      // Modify the values object with the formatted date and random Transaction ID
+      const updatedValues = {
+        ...values,
+        Date: gmtDate,
+        Transaction_ID: randomTransactionID
+      };
+  
       const response = await fetch("http://127.0.0.1:5000/transactions", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(values),
+        body: JSON.stringify(updatedValues),
       });
       if (!response.ok) {
         throw new Error("Failed to add transaction");
       }
       message.success("Transaction added successfully.");
       setAddModalVisible(false);
-      fetchTransactions(); // Fetch updated transactions after adding
+      fetchTransactions(); 
     } catch (error) {
       console.error("Error adding transaction:", error);
       message.error("Failed to add transaction.");
@@ -249,7 +261,6 @@ const AddTransactionForm = ({ onSubmit }) => {
 
   return (
     <Form form={form} onFinish={onFinish} layout="vertical">
-
       <Form.Item
         name="VIN"
         label="VIN"
@@ -258,11 +269,22 @@ const AddTransactionForm = ({ onSubmit }) => {
         <Input />
       </Form.Item>
       <Form.Item
+        name="Customer_ID"
+        label="Customer_ID"
+        rules={[{ required: true, message: "Please input the customer id!" }]}
+      >
+        <Input />
+      </Form.Item>
+      <Form.Item
         name="Date"
         label="Date"
         rules={[{ required: true, message: "Please input the Date!" }]}
       >
-        <Input />
+        <DatePicker
+          showTime
+          format="YYYY-MM-DD HH:mm:ss"
+          style={{ width: "100%" }}
+        />
       </Form.Item>
       <Form.Item
         name="Price"
@@ -286,5 +308,6 @@ const AddTransactionForm = ({ onSubmit }) => {
     </Form>
   );
 };
+
 
 export default TransactionTable;
