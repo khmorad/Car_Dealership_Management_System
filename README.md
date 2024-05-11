@@ -1,8 +1,8 @@
+## Demo link
+[![Watch the video](https://img.youtube.com/vi/VmVytncY6dc/maxresdefault.jpg)](https://youtu.be/VmVytncY6dc)
+
 # Car Dealership Management System
 ![Index Page](/project_resourses/logo.png)
-
-## Demo link
-Youtube: https://youtu.be/VmVytncY6dc?si=Y5aZbnEADz59HKna
 
 ## Team Members
 - Yar Moradpour
