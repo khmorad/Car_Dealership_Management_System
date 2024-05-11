@@ -1,6 +1,9 @@
 # Car Dealership Management System
 ![Index Page](/project_resourses/logo.png)
 
+## Demo link
+Youtube: https://youtu.be/VmVytncY6dc?si=Y5aZbnEADz59HKna
+
 ## Team Members
 - Yar Moradpour
 - Rio Taiga
@@ -27,9 +30,6 @@ Home Page when Customer is Logged in
 ![Index Page](/project_resourses/customerHome.png)
 Dashboard when Employee is Logged in
 ![Index Page](/project_resourses/employeeDash.png)
-
-## Recording of the Program
-
 
 ## Project Description
 The Car Dealership Management System is designed to revolutionize how car dealerships operate in the competitive automotive industry. It integrates inventory management, customer relations, sales tracking, and reporting functionalities to enhance customer satisfaction and streamline dealership operations.
@@ -83,3 +83,7 @@ The Car Dealership Management System is designed to revolutionize how car dealer
 ## Languages
 - **Front-end:** React (JavaScript)
 - **Back-end:** Python (Flask framework), SQL
+
+## Future Implementation
+- Deploy Database and API to Cloud services
+- Publish website
