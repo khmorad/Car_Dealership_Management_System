@@ -15,25 +15,22 @@ app.config['MYSQL_PASSWORD'] = os.getenv("password")
 app.config['MYSQL_DB'] = os.getenv("dbName")
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 
-# Initialize MySQL
 mysql = MySQL(app)
 CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}})
 
 # ************************Rio Taiga(Employee, Customer table)***********************************
-# Create Employee
+
 @app.route('/employee', methods=['POST'])
 def create_employee():
     try:
         cur = mysql.connection.cursor()
-        # Extract data from request
         data = request.json
         name = data['name']
         dob = data['dob']
         department = data['department']
         job_title = data['job_title']
         report_to = data.get('report_to', None)
-        password = data['password']  # Add password field
-        # Insert data into database
+        password = data['password']
         cur.execute(
             "INSERT INTO Employees (Name, DOB, Department, jobTitle, reportTo, Password) VALUES (%s, %s, %s, %s, %s, %s)",
             (name, dob, department, job_title, report_to, password)
@@ -44,12 +41,10 @@ def create_employee():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
-# Read all Employees
 @app.route('/employee', methods=['GET'])
 def get_employees():
     try:
         cur = mysql.connection.cursor()
-        # Query database for employees (excluding password field)
         cur.execute("SELECT * FROM Employees")
         employees = cur.fetchall()
         cur.close()
@@ -57,20 +52,17 @@ def get_employees():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
-# Update Employee
 @app.route('/employee/<int:employee_id>', methods=['PUT'])
 def update_employee(employee_id):
     try:
         cur = mysql.connection.cursor()
-        # Extract data from request
         data = request.json
         name = data['name']
         dob = data['dob']
         department = data['department']
         job_title = data['job_title']
         report_to = data.get('report_to', None)
-        password = data['password']  # Add password field
-        # Update employee in database
+        password = data['password']
         cur.execute(
             "UPDATE Employees SET Name = %s, DOB = %s, Department = %s, jobTitle = %s, reportTo = %s, Password = %s WHERE Employee_ID = %s",
             (name, dob, department, job_title, report_to, password, employee_id)
@@ -81,7 +73,6 @@ def update_employee(employee_id):
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
-# Delete Employee
 @app.route('/employee/<int:employee_id>', methods=['DELETE'])
 def delete_employee(employee_id):
     try:
@@ -94,12 +85,10 @@ def delete_employee(employee_id):
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
-# Create Customer
 @app.route('/customer', methods=['POST'])
 def create_customer():
     try:
         cur = mysql.connection.cursor()
-        # Extract data from request
         data = request.json
         customer_id = data['Customer_ID']
         name = data['Name']
@@ -109,8 +98,7 @@ def create_customer():
         phone_number = data['PhoneNumber']
         email = data['Email']
         employee_id = data['Employee_ID']
-        password = data['Password']  # Add password field
-        # Insert data into database
+        password = data['Password']
         cur.execute(
             "INSERT INTO Customers (Customer_ID, Name, DOB, Address, PhoneNumber, Email, Employee_ID, Password) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
             (customer_id, name, dob, address, phone_number, email, employee_id, password)
@@ -121,12 +109,10 @@ def create_customer():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
-# Read all Customers
 @app.route('/customer', methods=['GET'])
 def get_customers():
     try:
         cur = mysql.connection.cursor()
-        # Query database for customers (excluding password field)
         cur.execute("SELECT * FROM Customers")
         customers = cur.fetchall()
         cur.close()
@@ -134,12 +120,10 @@ def get_customers():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
-# Update Customer
 @app.route('/customer/<int:customer_id>', methods=['PUT'])
 def update_customer(customer_id):
     try:
         cur = mysql.connection.cursor()
-        # Extract data from request
         data = request.json
         name = data['Name']
         dob_str = data['DOB']
@@ -148,8 +132,7 @@ def update_customer(customer_id):
         phone_number = data['PhoneNumber']
         email = data['Email']
         employee_id = data['Employee_ID']
-        password = data['Password']  # Add password field
-        # Update customer in database
+        password = data['Password']
         cur.execute(
             "UPDATE Customers SET Name = %s, DOB = %s, Address = %s, PhoneNumber = %s, Email = %s, Employee_ID = %s, Password = %s WHERE Customer_ID = %s",
             (name, dob, address, phone_number, email, employee_id, password, customer_id)
@@ -160,12 +143,10 @@ def update_customer(customer_id):
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
-# Delete Customer
 @app.route('/customer/<int:customer_id>', methods=['DELETE'])
 def delete_customer(customer_id):
     try:
         cur = mysql.connection.cursor()
-        # Delete customer from database
         cur.execute("DELETE FROM Customers WHERE Customer_ID = %s", (customer_id,))
         mysql.connection.commit()
         cur.close()
@@ -176,8 +157,6 @@ def delete_customer(customer_id):
 
 # ************************Eddie (Car, Car_part table)**************************
 
-################ Cars #################
-# GET method for all cars (a single car if using car_id)
 @app.route('/cars/<string:car_id>', methods=['GET'])
 def get_one_car(car_id):
     cursor = mysql.connection.cursor()
@@ -197,20 +176,16 @@ def get_one_car(car_id):
         cursor.close()
 
 
-# CREATE method for a single car
 @app.route('/add/cars', methods=['POST'])
 def create_car():
     cursor = mysql.connection.cursor()
     try:
         request_data = request.get_json()
-        # Query database for existed car if there is any
         cursor.execute("SELECT * FROM Cars WHERE VIN=%(VIN)s", request_data)
         returned_data = cursor.fetchall()
-        # If there is existed record, return error 400
         if returned_data:
             cursor.close()
             return jsonify({"Error": "Car ID is already existed"}), 400
-        # Query database to insert new car record
         cursor.execute(
             """INSERT INTO Cars 
             (VIN, Year_of_manufacturing, Brand, Model, Trim, Mileage, Type, Gas_Type, Price, image_url, Customer_ID) 
@@ -235,16 +210,12 @@ def update_car():
         # Query database to verify valid VIN
         cursor.execute("SELECT * FROM Cars WHERE VIN = %(VIN)s", request_data)
         returned_data = cursor.fetchone()
-        # If VIN does not exist, return error 404
         if not returned_data:
             return jsonify({"Error": "Car does not exist"}), 404
-        # Query database for valid customer
         cursor.execute("SELECT * FROM Customers WHERE Customer_ID = %(Customer_ID)s", request_data)
         returned_data = cursor.fetchall()
-        # If customer record does not exist, return error 404
         if not returned_data:
             return jsonify({"Error": "Customer does not exist, please add customer before adding car"}), 404
-        # Query database to update record
         cursor.execute(
             """UPDATE Cars 
             SET Year_of_manufacturing = %(Year_of_manufacturing)s, Brand = %(Brand)s, Model = %(Model)s, Trim = %(Trim)s, 
@@ -260,19 +231,15 @@ def update_car():
         cursor.close()
 
 
-# DELETE
 @app.route('/remove/cars/<string:VIN>', methods=['DELETE'])
 def delete_car(VIN):
     cursor = mysql.connection.cursor()
     try:
-        # Query database to verify valid VIN
         cursor.execute(""" SELECT * FROM Cars WHERE VIN=%s """, (VIN,))
         returned_data = cursor.fetchall()
-        # If VIN does not exist, return error 404
         if not returned_data:
             cursor.close()
             return jsonify({"Error": "Car ID doesn't existed"}), 404
-        # Query database to delete matched record
         cursor.execute(""" DELETE FROM Cars WHERE VIN=%s """, (VIN,))
         mysql.connection.commit()
         return jsonify({"Success": "Car is deleted"}), 200
@@ -282,8 +249,6 @@ def delete_car(VIN):
     finally:
         cursor.close()
 
-################ Car part #################
-# GET method for all parts (a single part if using part_id)
 @app.route('/browse/parts/<part_id>', methods=['GET'])
 def get_part(part_id):
     cursor = mysql.connection.cursor()
@@ -304,20 +269,16 @@ def get_part(part_id):
         cursor.close()
 
 
-# CREATE method for a part
 @app.route('/add/parts', methods=['POST'])
 def create_part():
     cursor = mysql.connection.cursor()
     try:
         request_data = request.get_json()
-        # Query database for existed car if there is any
         cursor.execute("SELECT * FROM Car_part WHERE Part_ID=%(Part_ID)s", request_data)
         returned_data = cursor.fetchall()
-        # If there is existed record, return error 400
         if returned_data:
             cursor.close()
             return jsonify({"Error": "Part is already existed"}), 400
-        # Query database to insert new car record
         cursor.execute(
             """INSERT INTO Car_part (Part_ID, Name, Brand, Fitment, Price) 
             VALUES (%(Part_ID)s, %(Name)s, %(Brand)s, %(Fitment)s, %(Price)s)""",
@@ -330,19 +291,15 @@ def create_part():
     finally:
         cursor.close()
 
-# UPDATE a part
 @app.route("/update/parts", methods=["PUT"])
 def update_part():
     cursor = mysql.connection.cursor()
     try:
         request_data = request.get_json()
-        # Query database to verify valid Part_ID
         cursor.execute("SELECT * FROM Car_part WHERE Part_ID = %(Part_ID)s", request_data)
         returned_data = cursor.fetchone()
-        # If Part_ID does not exist, return error 404
         if not returned_data:
             return jsonify({"Error": "Part does not exist"}), 404
-        # Query database to update record
         cursor.execute(
             """UPDATE Car_part 
             SET Name = %(Name)s, Brand = %(Brand)s, Fitment = %(Fitment)s, Price = %(Price)s WHERE Part_ID = %(Part_ID)s""",
@@ -356,19 +313,15 @@ def update_part():
         cursor.close()
 
 
-# DELETE a part
 @app.route('/remove/parts/<int:part_id>', methods=['DELETE'])
 def delete_part(part_id):
     cursor = mysql.connection.cursor()
     try:
-        # Query database to verify valid Part_ID
         cursor.execute(""" SELECT * FROM Car_part WHERE Part_ID=%s """, (part_id,))
         returned_data = cursor.fetchall()
-        # If Part_ID does not exist, return error 404
         if not returned_data:
             cursor.close()
             return jsonify({"Error": "Part doesn't existed"}), 404
-        # Query database to delete matched record
         cursor.execute(""" DELETE FROM Car_part WHERE Part_ID=%s """, (part_id,))
         mysql.connection.commit()
         return jsonify({"Success": "Part is deleted"}), 200
@@ -391,7 +344,6 @@ def add_transaction():
         id = data['Transaction_ID']
         vin = data['VIN']
 
-        # Extract and format the date
         date_str = data['Date']
         date = datetime.strptime(date_str, '%a, %d %b %Y %H:%M:%S %Z').strftime('%Y-%m-%d')
 
@@ -444,33 +396,29 @@ def get_single_transactions(Transaction_ID):
 def update_transaction(Transaction_ID):
     cursor = mysql.connection.cursor()
     try:
-        # Get existing transaction data (optional)
         cursor.execute("SELECT * FROM Transactions WHERE Transaction_ID = %s", [Transaction_ID])
         existing_transaction = cursor.fetchone()
 
         if not existing_transaction:
             return jsonify({'error': 'Transaction not found'}), 404
 
-        # Extract and validate update data from request
         data = request.get_json()
         if not data:
             return jsonify({'error': 'Missing update data in request'}), 400
 
-        # Prepare update parameters with potential sanitization (consider libraries like SQLAlchemy)
         update_data = {}
         if 'VIN' in data:
-            update_data['VIN'] = data['VIN']  # Sanitize if needed
+            update_data['VIN'] = data['VIN']
         if 'Customer_ID' in data:
-            update_data['Customer_ID'] = data['Customer_ID']  # Sanitize if needed
+            update_data['Customer_ID'] = data['Customer_ID']
         if 'Date' in data:
-            # Parse and format the date
             date_str = data['Date']
             date = datetime.strptime(date_str, '%a, %d %b %Y %H:%M:%S %Z').strftime('%Y-%m-%d')
             update_data['Date'] = date
         if 'Price' in data:
             update_data['Price'] = data['Price']
         if 'Employee_ID' in data:
-            update_data['Employee_ID'] = data['Employee_ID']  # Sanitize if needed
+            update_data['Employee_ID'] = data['Employee_ID']
 
         set_clause = ", ".join([f"{key} = %s" for key in update_data.keys()])
         update_query = f"UPDATE Transactions SET {set_clause} WHERE Transaction_ID = %s"
@@ -479,7 +427,7 @@ def update_transaction(Transaction_ID):
         cursor.execute(update_query, update_params)
 
         if cursor.rowcount == 0:
-            return jsonify({'message': 'No changes made to transaction'}), 200  # Or a more specific message
+            return jsonify({'message': 'No changes made to transaction'}), 200
 
         mysql.connection.commit()
         return jsonify({'message': 'Transaction updated successfully'}), 200
@@ -495,13 +443,11 @@ def update_transaction(Transaction_ID):
 def delete_transaction(Transaction_ID):
     cursor = mysql.connection.cursor()
     try:
-        # Delete the transaction based on Transaction_ID
         cursor.execute("""
             DELETE FROM Transactions
             WHERE Transaction_ID = %s
         """, [Transaction_ID])
 
-        # Check if any row was deleted
         if cursor.rowcount == 0:
             return jsonify({'error': 'Transaction not found'}), 404
 
