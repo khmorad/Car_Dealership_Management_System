@@ -274,7 +274,7 @@ def create_part():
     cursor = mysql.connection.cursor()
     try:
         request_data = request.get_json()
-        cursor.execute("SELECT * FROM Car_part WHERE Part_ID=%(Part_ID)s", request_data)
+        cursor.execute('SELECT * FROM Car_part WHERE Part_ID=%(Part_ID)s', request_data)
         returned_data = cursor.fetchall()
         if returned_data:
             cursor.close()
