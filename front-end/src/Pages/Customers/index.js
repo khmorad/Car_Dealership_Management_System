@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Table, Modal, Form, Input, message, Typography } from "antd";
+import { Button, Table, Modal, Form, Input, message, Typography, DatePicker } from "antd";
 
 const CustomerTable = () => {
   const [customers, setCustomers] = useState([]);
@@ -219,7 +219,9 @@ const CustomerTable = () => {
 
   return (
     <>
+    <div>
       <Typography.Text>Customer Table</Typography.Text>
+      </div>
       <Button
         type="primary"
         onClick={handleAdd}
@@ -273,7 +275,11 @@ const AddCustomerForm = ({ onSubmit }) => {
         label="DOB"
         rules={[{ required: true, message: "Please input the DOB!" }]}
       >
-        <Input />
+        <DatePicker
+          showTime
+          format="YYYY-MM-DD HH:mm:ss"
+          style={{ width: "100%" }}
+        />
       </Form.Item>
       <Form.Item
         name="Address"
