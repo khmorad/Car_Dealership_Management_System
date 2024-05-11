@@ -1,6 +1,5 @@
 ## Demo link
-[![Watch the video](https://img.youtube.com/vi/VmVytncY6dc/maxresdefault.jpg)](https://youtu.be/VmVytncY6dc)
-
+Link: https://www.youtube.com/watch?v=VmVytncY6dc&ab_channel=TuongManhNguyen
 # Car Dealership Management System
 ![Index Page](/project_resourses/logo.png)
 
