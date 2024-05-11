@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Form, Input, message, Modal, Table, Typography } from "antd";
+import { Button, Form, Input, message, Modal, Table, Typography, DatePicker } from "antd";
 
 const ManageCars = () => {
   const [cars, setCars] = useState([]);
@@ -214,7 +214,9 @@ const ManageCars = () => {
 
   return (
     <>
+      <div>
       <Typography.Text>Manage Cars</Typography.Text>
+      </div>
       <Button type="primary" onClick={handleAdd} style={{ marginBottom: '16px' }}>Add Car</Button>
       <Table
         columns={columns}

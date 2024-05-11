@@ -219,7 +219,10 @@ const TransactionTable = () => {
 
   return (
     <>
+    
+    <div>
       <Typography.Text>Transaction Table</Typography.Text>
+      </div>
       <Button
         type="primary"
         onClick={handleAdd}

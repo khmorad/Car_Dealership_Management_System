@@ -140,7 +140,7 @@ export default function Signup() {
     return (
       <div className="container">
         <div className="center">
-          <h1>Login</h1>
+          <h1>Signup</h1>
           <form onSubmit={handleSubmit}>
             <div className="txt_field">
               <input type="text" name="text" value={username} onChange={handleUsernameChange} required />

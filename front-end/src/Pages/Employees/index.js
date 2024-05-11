@@ -213,7 +213,9 @@ const EmployeeTable = () => {
 
   return (
     <>
+       <div>
       <Typography.Text>Employee Table</Typography.Text>
+      </div>
       <Button
         type="primary"
         onClick={handleAdd}
